@@ -105,7 +105,7 @@ public final class Entity
         Point pos = this.position;
 
         Functions.removeEntity(world, this);
-        Functions.unscheduleAllEvents(scheduler, this);
+        scheduler.unscheduleAllEvents(this);
 
         Entity blob = Functions.createOreBlob(this.id + Functions.BLOB_ID_SUFFIX, pos,
                 this.actionPeriod / Functions.BLOB_PERIOD_SCALE,
@@ -130,7 +130,7 @@ public final class Entity
         if (blobTarget.isPresent()) {
             Point tgtPos = blobTarget.get().position;
 
-            if (Functions.moveToOreBlob(this, world, blobTarget.get(), scheduler)) {
+            if (this.moveToOreBlob(world, blobTarget.get(), scheduler)) {
                 Entity quake = Functions.createQuake(tgtPos,
                         imageStore.getImageList(Functions.QUAKE_KEY));
 
@@ -150,7 +150,7 @@ public final class Entity
             ImageStore imageStore,
             EventScheduler scheduler)
     {
-        Functions.unscheduleAllEvents(scheduler, this);
+        scheduler.unscheduleAllEvents(this);
         Functions.removeEntity(world, this);
     }
 
@@ -159,7 +159,7 @@ public final class Entity
             ImageStore imageStore,
             EventScheduler scheduler)
     {
-        Optional<Point> openPt = Functions.findOpenAround(world, this.position);
+        Optional<Point> openPt = world.findOpenAround(this.position);
 
         if (openPt.isPresent()) {
             Entity ore = Functions.createOre(Functions.ORE_ID_PREFIX + this.id, openPt.get(),
@@ -187,7 +187,7 @@ public final class Entity
                     this.images);
 
             Functions.removeEntity(world, this);
-            Functions.unscheduleAllEvents(scheduler, this);
+            scheduler.unscheduleAllEvents(this);
 
             Functions.addEntity(world, miner);
             miner.scheduleActions(scheduler, world, imageStore);
@@ -209,7 +209,7 @@ public final class Entity
                 this.images);
 
         Functions.removeEntity(world, this);
-        Functions.unscheduleAllEvents(scheduler, this);
+        scheduler.unscheduleAllEvents(this);
 
         Functions.addEntity(world, miner);
         miner.scheduleActions(scheduler, world, imageStore);
@@ -281,17 +281,17 @@ public final class Entity
         if (this.position.adjacent(target.position)) {
             this.resourceCount += 1;
             Functions.removeEntity(world, target);
-            Functions.unscheduleAllEvents(scheduler, target);
+            scheduler.unscheduleAllEvents(target);
 
             return true;
         }
         else {
-            Point nextPos = Functions.nextPositionMiner(this, world, target.position);
+            Point nextPos = this.nextPositionMiner(world, target.position);
 
             if (!this.position.equals(nextPos)) {
                 Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
                 if (occupant.isPresent()) {
-                    Functions.unscheduleAllEvents(scheduler, occupant.get());
+                    scheduler.unscheduleAllEvents(occupant.get());
                 }
 
                 Functions.moveEntity(world, this, nextPos);
@@ -309,17 +309,83 @@ public final class Entity
             return true;
         }
         else {
-            Point nextPos = Functions.nextPositionMiner(this, world, target.position);
+            Point nextPos = this.nextPositionMiner(world, target.position);
 
             if (!this.position.equals(nextPos)) {
                 Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
                 if (occupant.isPresent()) {
-                    Functions.unscheduleAllEvents(scheduler, occupant.get());
+                    scheduler.unscheduleAllEvents(occupant.get());
                 }
 
                 Functions.moveEntity(world, this, nextPos);
             }
             return false;
         }
+    }
+
+    public boolean moveToOreBlob(
+            WorldModel world,
+            Entity target,
+            EventScheduler scheduler)
+    {
+        if (this.position.adjacent(target.position)) {
+            Functions.removeEntity(world, target);
+            scheduler.unscheduleAllEvents(target);
+            return true;
+        }
+        else {
+            Point nextPos = this.nextPositionOreBlob(world, target.position);
+
+            if (!this.position.equals(nextPos)) {
+                Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
+                if (occupant.isPresent()) {
+                    scheduler.unscheduleAllEvents(occupant.get());
+                }
+
+                Functions.moveEntity(world, this, nextPos);
+            }
+            return false;
+        }
+    }
+
+    public Point nextPositionMiner(WorldModel world, Point destPos)
+    {
+        int horiz = Integer.signum(destPos.x - this.position.x);
+        Point newPos = new Point(this.position.x + horiz, this.position.y);
+
+        if (horiz == 0 || Functions.isOccupied(world, newPos)) {
+            int vert = Integer.signum(destPos.y - this.position.y);
+            newPos = new Point(this.position.x, this.position.y + vert);
+
+            if (vert == 0 || Functions.isOccupied(world, newPos)) {
+                newPos = this.position;
+            }
+        }
+
+        return newPos;
+    }
+
+    public Point nextPositionOreBlob(WorldModel world, Point destPos)
+    {
+        int horiz = Integer.signum(destPos.x - this.position.x);
+        Point newPos = new Point(this.position.x + horiz, this.position.y);
+
+        Optional<Entity> occupant = Functions.getOccupant(world, newPos);
+
+        if (horiz == 0 || (occupant.isPresent() && !(occupant.get().kind
+                == EntityKind.ORE)))
+        {
+            int vert = Integer.signum(destPos.y - this.position.y);
+            newPos = new Point(this.position.x, this.position.y + vert);
+            occupant = Functions.getOccupant(world, newPos);
+
+            if (vert == 0 || (occupant.isPresent() && !(occupant.get().kind
+                    == EntityKind.ORE)))
+            {
+                newPos = this.position;
+            }
+        }
+
+        return newPos;
     }
 }
