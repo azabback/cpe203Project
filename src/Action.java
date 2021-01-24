@@ -6,7 +6,7 @@ public final class Action
     public ImageStore imageStore;
     public int repeatCount;
 
-    public Action(
+    private Action(
             ActionKind kind,
             Entity entity,
             WorldModel world,
@@ -26,7 +26,7 @@ public final class Action
 
         if (this.repeatCount != 1) {
             scheduler.scheduleEvent(this.entity,
-                    Functions.createAnimationAction(this.entity,
+                    Action.createAnimationAction(this.entity,
                             Math.max(this.repeatCount - 1,
                                     0)),
                     this.entity.getAnimationPeriod());
@@ -83,5 +83,16 @@ public final class Action
                 this.executeAnimationAction(scheduler);
                 break;
         }
+    }
+
+    public static Action createAnimationAction(Entity entity, int repeatCount) {
+        return new Action(ActionKind.ANIMATION, entity, null, null,
+                repeatCount);
+    }
+
+    public static Action createActivityAction(
+            Entity entity, WorldModel world, ImageStore imageStore)
+    {
+        return new Action(ActionKind.ACTIVITY, entity, world, imageStore, 0);
     }
 }

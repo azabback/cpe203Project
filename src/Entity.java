@@ -73,7 +73,7 @@ public final class Entity
         }
         else {
             scheduler.scheduleEvent(this,
-                    Functions.createActivityAction(this, world, imageStore),
+                    Action.createActivityAction(this, world, imageStore),
                     this.actionPeriod);
         }
     }
@@ -92,7 +92,7 @@ public final class Entity
                 || !this.transformNotFull(world, scheduler, imageStore))
         {
             scheduler.scheduleEvent( this,
-                    Functions.createActivityAction(this, world, imageStore),
+                    Action.createActivityAction(this, world, imageStore),
                     this.actionPeriod);
         }
     }
@@ -104,7 +104,7 @@ public final class Entity
     {
         Point pos = this.position;
 
-        Functions.removeEntity(world, this);
+        world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);
 
         Entity blob = Functions.createOreBlob(this.id + Functions.BLOB_ID_SUFFIX, pos,
@@ -141,7 +141,7 @@ public final class Entity
         }
 
         scheduler.scheduleEvent( this,
-                Functions.createActivityAction(this, world, imageStore),
+                Action.createActivityAction(this, world, imageStore),
                 nextPeriod);
     }
 
@@ -151,7 +151,7 @@ public final class Entity
             EventScheduler scheduler)
     {
         scheduler.unscheduleAllEvents(this);
-        Functions.removeEntity(world, this);
+        world.removeEntity(this);
     }
 
     public void executeVeinActivity(
@@ -171,7 +171,7 @@ public final class Entity
         }
 
         scheduler.scheduleEvent(this,
-                Functions.createActivityAction(this, world, imageStore),
+                Action.createActivityAction(this, world, imageStore),
                 this.actionPeriod);
     }
 
@@ -186,7 +186,7 @@ public final class Entity
                     this.animationPeriod,
                     this.images);
 
-            Functions.removeEntity(world, this);
+            world.removeEntity(this);
             scheduler.unscheduleAllEvents(this);
 
             world.addEntity(miner);
@@ -208,7 +208,7 @@ public final class Entity
                 this.animationPeriod,
                 this.images);
 
-        Functions.removeEntity(world, this);
+        world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);
 
         world.addEntity(miner);
@@ -223,49 +223,49 @@ public final class Entity
         switch (this.kind) {
             case MINER_FULL:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Functions.createAnimationAction(this, 0),
+                        Action.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case MINER_NOT_FULL:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Functions.createAnimationAction(this, 0),
+                        Action.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case ORE:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 break;
 
             case ORE_BLOB:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Functions.createAnimationAction(this, 0),
+                        Action.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case QUAKE:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
-                scheduler.scheduleEvent(this, Functions.createAnimationAction(this,
+                scheduler.scheduleEvent(this, Action.createAnimationAction(this,
                         Functions.QUAKE_ANIMATION_REPEAT_COUNT),
                         this.getAnimationPeriod());
                 break;
 
             case VEIN:
                 scheduler.scheduleEvent(this,
-                        Functions.createActivityAction(this, world, imageStore),
+                        Action.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 break;
 
@@ -280,7 +280,7 @@ public final class Entity
     {
         if (this.position.adjacent(target.position)) {
             this.resourceCount += 1;
-            Functions.removeEntity(world, target);
+            world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
 
             return true;
@@ -289,12 +289,12 @@ public final class Entity
             Point nextPos = this.nextPositionMiner(world, target.position);
 
             if (!this.position.equals(nextPos)) {
-                Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
+                Optional<Entity> occupant = world.getOccupant(nextPos);
                 if (occupant.isPresent()) {
                     scheduler.unscheduleAllEvents(occupant.get());
                 }
 
-                Functions.moveEntity(world, this, nextPos);
+                world.moveEntity(this, nextPos);
             }
             return false;
         }
@@ -312,12 +312,12 @@ public final class Entity
             Point nextPos = this.nextPositionMiner(world, target.position);
 
             if (!this.position.equals(nextPos)) {
-                Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
+                Optional<Entity> occupant = world.getOccupant(nextPos);
                 if (occupant.isPresent()) {
                     scheduler.unscheduleAllEvents(occupant.get());
                 }
 
-                Functions.moveEntity(world, this, nextPos);
+                world.moveEntity(this, nextPos);
             }
             return false;
         }
@@ -329,7 +329,7 @@ public final class Entity
             EventScheduler scheduler)
     {
         if (this.position.adjacent(target.position)) {
-            Functions.removeEntity(world, target);
+            world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
             return true;
         }
@@ -337,12 +337,12 @@ public final class Entity
             Point nextPos = this.nextPositionOreBlob(world, target.position);
 
             if (!this.position.equals(nextPos)) {
-                Optional<Entity> occupant = Functions.getOccupant(world, nextPos);
+                Optional<Entity> occupant = world.getOccupant(nextPos);
                 if (occupant.isPresent()) {
                     scheduler.unscheduleAllEvents(occupant.get());
                 }
 
-                Functions.moveEntity(world, this, nextPos);
+                world.moveEntity(this, nextPos);
             }
             return false;
         }
@@ -370,14 +370,14 @@ public final class Entity
         int horiz = Integer.signum(destPos.x - this.position.x);
         Point newPos = new Point(this.position.x + horiz, this.position.y);
 
-        Optional<Entity> occupant = Functions.getOccupant(world, newPos);
+        Optional<Entity> occupant = world.getOccupant(newPos);
 
         if (horiz == 0 || (occupant.isPresent() && !(occupant.get().kind
                 == EntityKind.ORE)))
         {
             int vert = Integer.signum(destPos.y - this.position.y);
             newPos = new Point(this.position.x, this.position.y + vert);
-            occupant = Functions.getOccupant(world, newPos);
+            occupant = world.getOccupant(newPos);
 
             if (vert == 0 || (occupant.isPresent() && !(occupant.get().kind
                     == EntityKind.ORE)))
@@ -387,5 +387,12 @@ public final class Entity
         }
 
         return newPos;
+    }
+
+    public static Entity createBlacksmith(
+            String id, Point position, List<PImage> images)
+    {
+        return new Entity(EntityKind.BLACKSMITH, id, position, images, 0, 0, 0,
+                0);
     }
 }
