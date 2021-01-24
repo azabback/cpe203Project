@@ -79,20 +79,6 @@ public final class Functions
     public static final int VEIN_ACTION_PERIOD = 4;
 
 
-    public static PImage getCurrentImage(Object entity) {
-        if (entity instanceof Background) {
-            return ((Background)entity).images.get(
-                    ((Background)entity).imageIndex);
-        }
-        else if (entity instanceof Entity) {
-            return ((Entity)entity).images.get(((Entity)entity).imageIndex);
-        }
-        else {
-            throw new UnsupportedOperationException(
-                    String.format("getCurrentImage not supported for %s",
-                                  entity));
-        }
-    }
 
     public static int getAnimationPeriod(Entity entity) {
         switch (entity.kind) {
@@ -920,7 +906,7 @@ public final class Functions
             WorldModel world, Point pos)
     {
         if (withinBounds(world, pos)) {
-            return Optional.of(getCurrentImage(getBackgroundCell(world, pos)));
+            return Optional.of(getBackgroundCell(world, pos).getCurrentImage());
         }
         else {
             return Optional.empty();
@@ -1005,7 +991,7 @@ public final class Functions
 
             if (contains(view.viewport, pos)) {
                 Point viewPoint = worldToViewport(view.viewport, pos.x, pos.y);
-                view.screen.image(getCurrentImage(entity),
+                view.screen.image(entity.getCurrentImage(),
                                   viewPoint.x * view.tileWidth,
                                   viewPoint.y * view.tileHeight);
             }

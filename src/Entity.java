@@ -34,4 +34,8 @@ public final class Entity
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
     }
+
+    public PImage getCurrentImage() {
+        return this.images.get(this.imageIndex);
+    }
 }
