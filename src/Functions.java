@@ -81,60 +81,6 @@ public final class Functions
 
 
 
-    public static void executeAction(Action action, EventScheduler scheduler) {
-        switch (action.kind) {
-            case ACTIVITY:
-                executeActivityAction(action, scheduler);
-                break;
-
-            case ANIMATION:
-                action.executeAnimationAction(scheduler);
-                break;
-        }
-    }
-
-
-    public static void executeActivityAction(
-            Action action, EventScheduler scheduler)
-    {
-        switch (action.entity.kind) {
-            case MINER_FULL:
-                action.entity.executeMinerFullActivity(action.world,
-                                         action.imageStore, scheduler);
-                break;
-
-            case MINER_NOT_FULL:
-                action.entity.executeMinerNotFullActivity(action.world,
-                                            action.imageStore, scheduler);
-                break;
-
-            case ORE:
-                action.entity.executeOreActivity(action.world,
-                                   action.imageStore, scheduler);
-                break;
-
-            case ORE_BLOB:
-                action.entity.executeOreBlobActivity(action.world,
-                                       action.imageStore, scheduler);
-                break;
-
-            case QUAKE:
-                action.entity.executeQuakeActivity(action.world,
-                                     action.imageStore, scheduler);
-                break;
-
-            case VEIN:
-                action.entity.executeVeinActivity(action.world,
-                                    action.imageStore, scheduler);
-                break;
-
-            default:
-                throw new UnsupportedOperationException(String.format(
-                        "executeActivityAction not supported for %s",
-                        action.entity.kind));
-        }
-    }
-
 
     public static void scheduleActions(
             Entity entity,
@@ -424,7 +370,7 @@ public final class Functions
 
             removePendingEvent(scheduler, next);
 
-            executeAction(next.action, scheduler);
+            next.action.executeAction(scheduler);
         }
     }
 
