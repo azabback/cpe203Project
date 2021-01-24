@@ -117,4 +117,61 @@ public final class Entity
         Functions.addEntity(world, blob);
         Functions.scheduleActions(blob, scheduler, world, imageStore);
     }
+
+    public void executeOreBlobActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Optional<Entity> blobTarget =
+                Functions.findNearest(world, this.position, EntityKind.VEIN);
+        long nextPeriod = this.actionPeriod;
+
+        if (blobTarget.isPresent()) {
+            Point tgtPos = blobTarget.get().position;
+
+            if (Functions.moveToOreBlob(this, world, blobTarget.get(), scheduler)) {
+                Entity quake = Functions.createQuake(tgtPos,
+                        Functions.getImageList(imageStore, Functions.QUAKE_KEY));
+
+                Functions.addEntity(world, quake);
+                nextPeriod += this.actionPeriod;
+                Functions.scheduleActions(quake, scheduler, world, imageStore);
+            }
+        }
+
+        Functions.scheduleEvent(scheduler, this,
+                Functions.createActivityAction(this, world, imageStore),
+                nextPeriod);
+    }
+
+    public void executeQuakeActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Functions.unscheduleAllEvents(scheduler, this);
+        Functions.removeEntity(world, this);
+    }
+
+    public void executeVeinActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Optional<Point> openPt = Functions.findOpenAround(world, this.position);
+
+        if (openPt.isPresent()) {
+            Entity ore = Functions.createOre(Functions.ORE_ID_PREFIX + this.id, openPt.get(),
+                    Functions.ORE_CORRUPT_MIN + Functions.rand.nextInt(
+                            Functions.ORE_CORRUPT_MAX - Functions.ORE_CORRUPT_MIN),
+                    Functions.getImageList(imageStore, Functions.ORE_KEY));
+            Functions.addEntity(world, ore);
+            Functions.scheduleActions(ore, scheduler, world, imageStore);
+        }
+
+        Functions.scheduleEvent(scheduler, this,
+                Functions.createActivityAction(this, world, imageStore),
+                this.actionPeriod);
+    }
 }

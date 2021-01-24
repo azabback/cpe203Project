@@ -114,17 +114,17 @@ public final class Functions
                 break;
 
             case ORE_BLOB:
-                executeOreBlobActivity(action.entity, action.world,
+                action.entity.executeOreBlobActivity(action.world,
                                        action.imageStore, scheduler);
                 break;
 
             case QUAKE:
-                executeQuakeActivity(action.entity, action.world,
+                action.entity.executeQuakeActivity(action.world,
                                      action.imageStore, scheduler);
                 break;
 
             case VEIN:
-                executeVeinActivity(action.entity, action.world,
+                action.entity.executeVeinActivity(action.world,
                                     action.imageStore, scheduler);
                 break;
 
@@ -135,67 +135,6 @@ public final class Functions
         }
     }
 
-
-
-    public static void executeOreBlobActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        Optional<Entity> blobTarget =
-                findNearest(world, entity.position, EntityKind.VEIN);
-        long nextPeriod = entity.actionPeriod;
-
-        if (blobTarget.isPresent()) {
-            Point tgtPos = blobTarget.get().position;
-
-            if (moveToOreBlob(entity, world, blobTarget.get(), scheduler)) {
-                Entity quake = createQuake(tgtPos,
-                                           getImageList(imageStore, QUAKE_KEY));
-
-                addEntity(world, quake);
-                nextPeriod += entity.actionPeriod;
-                scheduleActions(quake, scheduler, world, imageStore);
-            }
-        }
-
-        scheduleEvent(scheduler, entity,
-                      createActivityAction(entity, world, imageStore),
-                      nextPeriod);
-    }
-
-    public static void executeQuakeActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        unscheduleAllEvents(scheduler, entity);
-        removeEntity(world, entity);
-    }
-
-    public static void executeVeinActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        Optional<Point> openPt = findOpenAround(world, entity.position);
-
-        if (openPt.isPresent()) {
-            Entity ore = createOre(ORE_ID_PREFIX + entity.id, openPt.get(),
-                                   ORE_CORRUPT_MIN + rand.nextInt(
-                                           ORE_CORRUPT_MAX - ORE_CORRUPT_MIN),
-                                   getImageList(imageStore, ORE_KEY));
-            addEntity(world, ore);
-            scheduleActions(ore, scheduler, world, imageStore);
-        }
-
-        scheduleEvent(scheduler, entity,
-                      createActivityAction(entity, world, imageStore),
-                      entity.actionPeriod);
-    }
 
     public static void scheduleActions(
             Entity entity,
