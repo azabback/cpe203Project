@@ -9,4 +9,5 @@ public final class Viewport
         this.numRows = numRows;
         this.numCols = numCols;
     }
+
 }

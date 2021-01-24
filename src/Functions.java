@@ -81,167 +81,13 @@ public final class Functions
 
 
 
-
-    public static void scheduleActions(
-            Entity entity,
-            EventScheduler scheduler,
-            WorldModel world,
-            ImageStore imageStore)
-    {
-        switch (entity.kind) {
-            case MINER_FULL:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                scheduleEvent(scheduler, entity,
-                              createAnimationAction(entity, 0),
-                              entity.getAnimationPeriod());
-                break;
-
-            case MINER_NOT_FULL:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                scheduleEvent(scheduler, entity,
-                              createAnimationAction(entity, 0),
-                              entity.getAnimationPeriod());
-                break;
-
-            case ORE:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                break;
-
-            case ORE_BLOB:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                scheduleEvent(scheduler, entity,
-                              createAnimationAction(entity, 0),
-                              entity.getAnimationPeriod());
-                break;
-
-            case QUAKE:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                scheduleEvent(scheduler, entity, createAnimationAction(entity,
-                                                                       QUAKE_ANIMATION_REPEAT_COUNT),
-                              entity.getAnimationPeriod());
-                break;
-
-            case VEIN:
-                scheduleEvent(scheduler, entity,
-                              createActivityAction(entity, world, imageStore),
-                              entity.actionPeriod);
-                break;
-
-            default:
-        }
-    }
-
-    public static boolean transformNotFull(
-            Entity entity,
-            WorldModel world,
-            EventScheduler scheduler,
-            ImageStore imageStore)
-    {
-        if (entity.resourceCount >= entity.resourceLimit) {
-            Entity miner = createMinerFull(entity.id, entity.resourceLimit,
-                                           entity.position, entity.actionPeriod,
-                                           entity.animationPeriod,
-                                           entity.images);
-
-            removeEntity(world, entity);
-            unscheduleAllEvents(scheduler, entity);
-
-            addEntity(world, miner);
-            scheduleActions(miner, scheduler, world, imageStore);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public static void transformFull(
-            Entity entity,
-            WorldModel world,
-            EventScheduler scheduler,
-            ImageStore imageStore)
-    {
-        Entity miner = createMinerNotFull(entity.id, entity.resourceLimit,
-                                          entity.position, entity.actionPeriod,
-                                          entity.animationPeriod,
-                                          entity.images);
-
-        removeEntity(world, entity);
-        unscheduleAllEvents(scheduler, entity);
-
-        addEntity(world, miner);
-        scheduleActions(miner, scheduler, world, imageStore);
-    }
-
-    public static boolean moveToNotFull(
-            Entity miner,
-            WorldModel world,
-            Entity target,
-            EventScheduler scheduler)
-    {
-        if (adjacent(miner.position, target.position)) {
-            miner.resourceCount += 1;
-            removeEntity(world, target);
-            unscheduleAllEvents(scheduler, target);
-
-            return true;
-        }
-        else {
-            Point nextPos = nextPositionMiner(miner, world, target.position);
-
-            if (!miner.position.equals(nextPos)) {
-                Optional<Entity> occupant = getOccupant(world, nextPos);
-                if (occupant.isPresent()) {
-                    unscheduleAllEvents(scheduler, occupant.get());
-                }
-
-                moveEntity(world, miner, nextPos);
-            }
-            return false;
-        }
-    }
-
-    public static boolean moveToFull(
-            Entity miner,
-            WorldModel world,
-            Entity target,
-            EventScheduler scheduler)
-    {
-        if (adjacent(miner.position, target.position)) {
-            return true;
-        }
-        else {
-            Point nextPos = nextPositionMiner(miner, world, target.position);
-
-            if (!miner.position.equals(nextPos)) {
-                Optional<Entity> occupant = getOccupant(world, nextPos);
-                if (occupant.isPresent()) {
-                    unscheduleAllEvents(scheduler, occupant.get());
-                }
-
-                moveEntity(world, miner, nextPos);
-            }
-            return false;
-        }
-    }
-
     public static boolean moveToOreBlob(
             Entity blob,
             WorldModel world,
             Entity target,
             EventScheduler scheduler)
     {
-        if (adjacent(blob.position, target.position)) {
+        if (blob.position.adjacent(target.position)) {
             removeEntity(world, target);
             unscheduleAllEvents(scheduler, target);
             return true;
@@ -304,10 +150,6 @@ public final class Functions
         return newPos;
     }
 
-    public static boolean adjacent(Point p1, Point p2) {
-        return (p1.x == p2.x && Math.abs(p1.y - p2.y) == 1) || (p1.y == p2.y
-                && Math.abs(p1.x - p2.x) == 1);
-    }
 
     public static Optional<Point> findOpenAround(WorldModel world, Point pos) {
         for (int dy = -ORE_REACH; dy <= ORE_REACH; dy++) {
@@ -322,24 +164,6 @@ public final class Functions
         return Optional.empty();
     }
 
-    public static void scheduleEvent(
-            EventScheduler scheduler,
-            Entity entity,
-            Action action,
-            long afterPeriod)
-    {
-        long time = System.currentTimeMillis() + (long)(afterPeriod
-                * scheduler.timeScale);
-        Event event = new Event(action, time, entity);
-
-        scheduler.eventQueue.add(event);
-
-        // update list of pending events for the given entity
-        List<Event> pending = scheduler.pendingEvents.getOrDefault(entity,
-                                                                   new LinkedList<>());
-        pending.add(event);
-        scheduler.pendingEvents.put(entity, pending);
-    }
 
     public static void unscheduleAllEvents(
             EventScheduler scheduler, Entity entity)
@@ -374,9 +198,6 @@ public final class Functions
         }
     }
 
-    public static List<PImage> getImageList(ImageStore imageStore, String key) {
-        return imageStore.images.getOrDefault(key, imageStore.defaultImages);
-    }
 
     public static void loadImages(
             Scanner in, ImageStore imageStore, PApplet screen)
@@ -510,7 +331,7 @@ public final class Functions
                                  Integer.parseInt(properties[BGND_ROW]));
             String id = properties[BGND_ID];
             setBackground(world, pt,
-                          new Background(id, getImageList(imageStore, id)));
+                          new Background(id, imageStore.getImageList(id)));
         }
 
         return properties.length == BGND_NUM_PROPERTIES;
@@ -528,8 +349,7 @@ public final class Functions
                                                pt, Integer.parseInt(
                             properties[MINER_ACTION_PERIOD]), Integer.parseInt(
                             properties[MINER_ANIMATION_PERIOD]),
-                                               getImageList(imageStore,
-                                                            MINER_KEY));
+                                               imageStore.getImageList(MINER_KEY));
             tryAddEntity(world, entity);
         }
 
@@ -543,8 +363,7 @@ public final class Functions
             Point pt = new Point(Integer.parseInt(properties[OBSTACLE_COL]),
                                  Integer.parseInt(properties[OBSTACLE_ROW]));
             Entity entity = createObstacle(properties[OBSTACLE_ID], pt,
-                                           getImageList(imageStore,
-                                                        OBSTACLE_KEY));
+                                           imageStore.getImageList(OBSTACLE_KEY));
             tryAddEntity(world, entity);
         }
 
@@ -559,7 +378,7 @@ public final class Functions
                                  Integer.parseInt(properties[ORE_ROW]));
             Entity entity = createOre(properties[ORE_ID], pt, Integer.parseInt(
                     properties[ORE_ACTION_PERIOD]),
-                                      getImageList(imageStore, ORE_KEY));
+                                      imageStore.getImageList(ORE_KEY));
             tryAddEntity(world, entity);
         }
 
@@ -573,8 +392,7 @@ public final class Functions
             Point pt = new Point(Integer.parseInt(properties[SMITH_COL]),
                                  Integer.parseInt(properties[SMITH_ROW]));
             Entity entity = createBlacksmith(properties[SMITH_ID], pt,
-                                             getImageList(imageStore,
-                                                          SMITH_KEY));
+                                             imageStore.getImageList(SMITH_KEY));
             tryAddEntity(world, entity);
         }
 
@@ -590,7 +408,7 @@ public final class Functions
             Entity entity = createVein(properties[VEIN_ID], pt,
                                        Integer.parseInt(
                                                properties[VEIN_ACTION_PERIOD]),
-                                       getImageList(imageStore, VEIN_KEY));
+                                       imageStore.getImageList(VEIN_KEY));
             tryAddEntity(world, entity);
         }
 
