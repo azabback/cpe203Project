@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Optional;
 
 import processing.core.PImage;
 
@@ -51,5 +52,69 @@ public final class Entity
                         String.format("getAnimationPeriod not supported for %s",
                                 this.kind));
         }
+    }
+
+    public void nextImage() {
+        this.imageIndex = (this.imageIndex + 1) % this.images.size();
+    }
+
+    public void executeMinerFullActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Optional<Entity> fullTarget =
+                Functions.findNearest(world, this.position, EntityKind.BLACKSMITH);
+
+        if (fullTarget.isPresent() && Functions.moveToFull(this, world,
+                fullTarget.get(), scheduler))
+        {
+            Functions.transformFull(this, world, scheduler, imageStore);
+        }
+        else {
+            Functions.scheduleEvent(scheduler, this,
+                    Functions.createActivityAction(this, world, imageStore),
+                    this.actionPeriod);
+        }
+    }
+
+    public void executeMinerNotFullActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Optional<Entity> notFullTarget =
+                Functions.findNearest(world, this.position, EntityKind.ORE);
+
+        if (!notFullTarget.isPresent() || !Functions.moveToNotFull(this, world,
+                notFullTarget.get(),
+                scheduler)
+                || !Functions.transformNotFull(this, world, scheduler, imageStore))
+        {
+            Functions.scheduleEvent(scheduler, this,
+                    Functions.createActivityAction(this, world, imageStore),
+                    this.actionPeriod);
+        }
+    }
+
+    public void executeOreActivity(
+            WorldModel world,
+            ImageStore imageStore,
+            EventScheduler scheduler)
+    {
+        Point pos = this.position;
+
+        Functions.removeEntity(world, this);
+        Functions.unscheduleAllEvents(scheduler, this);
+
+        Entity blob = Functions.createOreBlob(this.id + Functions.BLOB_ID_SUFFIX, pos,
+                this.actionPeriod / Functions.BLOB_PERIOD_SCALE,
+                Functions.BLOB_ANIMATION_MIN + Functions.rand.nextInt(
+                        Functions.BLOB_ANIMATION_MAX
+                                - Functions.BLOB_ANIMATION_MIN),
+                Functions.getImageList(imageStore, Functions.BLOB_KEY));
+
+        Functions.addEntity(world, blob);
+        Functions.scheduleActions(blob, scheduler, world, imageStore);
     }
 }

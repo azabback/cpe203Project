@@ -80,9 +80,6 @@ public final class Functions
 
 
 
-    public static void nextImage(Entity entity) {
-        entity.imageIndex = (entity.imageIndex + 1) % entity.images.size();
-    }
 
     public static void executeAction(Action action, EventScheduler scheduler) {
         switch (action.kind) {
@@ -91,41 +88,28 @@ public final class Functions
                 break;
 
             case ANIMATION:
-                executeAnimationAction(action, scheduler);
+                action.executeAnimationAction(scheduler);
                 break;
         }
     }
 
-    public static void executeAnimationAction(
-            Action action, EventScheduler scheduler)
-    {
-        nextImage(action.entity);
-
-        if (action.repeatCount != 1) {
-            scheduleEvent(scheduler, action.entity,
-                          createAnimationAction(action.entity,
-                                                Math.max(action.repeatCount - 1,
-                                                         0)),
-                          action.entity.getAnimationPeriod());
-        }
-    }
 
     public static void executeActivityAction(
             Action action, EventScheduler scheduler)
     {
         switch (action.entity.kind) {
             case MINER_FULL:
-                executeMinerFullActivity(action.entity, action.world,
+                action.entity.executeMinerFullActivity(action.world,
                                          action.imageStore, scheduler);
                 break;
 
             case MINER_NOT_FULL:
-                executeMinerNotFullActivity(action.entity, action.world,
+                action.entity.executeMinerNotFullActivity(action.world,
                                             action.imageStore, scheduler);
                 break;
 
             case ORE:
-                executeOreActivity(action.entity, action.world,
+                action.entity.executeOreActivity(action.world,
                                    action.imageStore, scheduler);
                 break;
 
@@ -151,68 +135,7 @@ public final class Functions
         }
     }
 
-    public static void executeMinerFullActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        Optional<Entity> fullTarget =
-                findNearest(world, entity.position, EntityKind.BLACKSMITH);
 
-        if (fullTarget.isPresent() && moveToFull(entity, world,
-                                                 fullTarget.get(), scheduler))
-        {
-            transformFull(entity, world, scheduler, imageStore);
-        }
-        else {
-            scheduleEvent(scheduler, entity,
-                          createActivityAction(entity, world, imageStore),
-                          entity.actionPeriod);
-        }
-    }
-
-    public static void executeMinerNotFullActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        Optional<Entity> notFullTarget =
-                findNearest(world, entity.position, EntityKind.ORE);
-
-        if (!notFullTarget.isPresent() || !moveToNotFull(entity, world,
-                                                         notFullTarget.get(),
-                                                         scheduler)
-                || !transformNotFull(entity, world, scheduler, imageStore))
-        {
-            scheduleEvent(scheduler, entity,
-                          createActivityAction(entity, world, imageStore),
-                          entity.actionPeriod);
-        }
-    }
-
-    public static void executeOreActivity(
-            Entity entity,
-            WorldModel world,
-            ImageStore imageStore,
-            EventScheduler scheduler)
-    {
-        Point pos = entity.position;
-
-        removeEntity(world, entity);
-        unscheduleAllEvents(scheduler, entity);
-
-        Entity blob = createOreBlob(entity.id + BLOB_ID_SUFFIX, pos,
-                                    entity.actionPeriod / BLOB_PERIOD_SCALE,
-                                    BLOB_ANIMATION_MIN + rand.nextInt(
-                                            BLOB_ANIMATION_MAX
-                                                    - BLOB_ANIMATION_MIN),
-                                    getImageList(imageStore, BLOB_KEY));
-
-        addEntity(world, blob);
-        scheduleActions(blob, scheduler, world, imageStore);
-    }
 
     public static void executeOreBlobActivity(
             Entity entity,

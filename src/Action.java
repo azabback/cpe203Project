@@ -19,4 +19,17 @@ public final class Action
         this.imageStore = imageStore;
         this.repeatCount = repeatCount;
     }
+
+    public void executeAnimationAction(EventScheduler scheduler)
+    {
+        this.entity.nextImage();
+
+        if (this.repeatCount != 1) {
+            Functions.scheduleEvent(scheduler, this.entity,
+                    Functions.createAnimationAction(this.entity,
+                            Math.max(this.repeatCount - 1,
+                                    0)),
+                    this.entity.getAnimationPeriod());
+        }
+    }
 }
