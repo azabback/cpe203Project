@@ -2,8 +2,7 @@ import processing.core.PImage;
 
 import java.util.*;
 
-public final class WorldModel
-{
+public final class WorldModel {
     public int numRows;
     public int numCols;
     public Background background[][];
@@ -35,8 +34,7 @@ public final class WorldModel
         return Optional.empty();
     }
 
-    public void setBackground(Point pos, Background background)
-    {
+    public void setBackground(Point pos, Background background) {
         if (this.withinBounds(pos)) {
             this.setBackgroundCell(pos, background);
         }
@@ -51,8 +49,7 @@ public final class WorldModel
         return this.withinBounds(pos) && this.getOccupancyCell(pos) != null;
     }
 
-    public Optional<Entity> findNearest(Point pos, EntityKind kind)
-    {
+    public Optional<Entity> findNearest(Point pos, EntityKind kind) {
         List<Entity> ofType = new LinkedList<>();
         for (Entity entity : this.entities) {
             if (entity.kind == kind) {
@@ -60,7 +57,7 @@ public final class WorldModel
             }
         }
 
-        return Functions.nearestEntity(ofType, pos);
+        return nearestEntity(ofType, pos);
     }
 
     /*
@@ -100,12 +97,10 @@ public final class WorldModel
         }
     }
 
-    public Optional<PImage> getBackgroundImage(Point pos)
-    {
+    public Optional<PImage> getBackgroundImage(Point pos) {
         if (this.withinBounds(pos)) {
             return Optional.of(this.getBackgroundCell(pos).getCurrentImage());
-        }
-        else {
+        } else {
             return Optional.empty();
         }
     }
@@ -113,8 +108,7 @@ public final class WorldModel
     public Optional<Entity> getOccupant(Point pos) {
         if (this.isOccupied(pos)) {
             return Optional.of(this.getOccupancyCell(pos));
-        }
-        else {
+        } else {
             return Optional.empty();
         }
     }
@@ -123,8 +117,7 @@ public final class WorldModel
         return this.occupancy[pos.y][pos.x];
     }
 
-    private void setOccupancyCell(Point pos, Entity entity)
-    {
+    private void setOccupancyCell(Point pos, Entity entity) {
         this.occupancy[pos.y][pos.x] = entity;
     }
 
@@ -132,8 +125,167 @@ public final class WorldModel
         return this.background[pos.y][pos.x];
     }
 
-    private void setBackgroundCell(Point pos, Background background)
-    {
+    private void setBackgroundCell(Point pos, Background background) {
         this.background[pos.y][pos.x] = background;
+    }
+
+    private boolean parseBackground(String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.BGND_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.BGND_COL]),
+                    Integer.parseInt(properties[Functions.BGND_ROW]));
+            String id = properties[Functions.BGND_ID];
+            this.setBackground(pt,
+                    new Background(id, imageStore.getImageList(id)));
+        }
+
+        return properties.length == Functions.BGND_NUM_PROPERTIES;
+    }
+
+    private boolean parseMiner(String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.MINER_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.MINER_COL]),
+                    Integer.parseInt(properties[Functions.MINER_ROW]));
+            Entity entity = Entity.createMinerNotFull(properties[Functions.MINER_ID],
+                    Integer.parseInt(
+                            properties[Functions.MINER_LIMIT]),
+                    pt, Integer.parseInt(
+                            properties[Functions.MINER_ACTION_PERIOD]), Integer.parseInt(
+                            properties[Functions.MINER_ANIMATION_PERIOD]),
+                    imageStore.getImageList(Functions.MINER_KEY));
+            this.tryAddEntity(entity);
+        }
+
+        return properties.length == Functions.MINER_NUM_PROPERTIES;
+    }
+
+    private boolean parseObstacle(
+            String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.OBSTACLE_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.OBSTACLE_COL]),
+                    Integer.parseInt(properties[Functions.OBSTACLE_ROW]));
+            Entity entity = Entity.createObstacle(properties[Functions.OBSTACLE_ID], pt,
+                    imageStore.getImageList(Functions.OBSTACLE_KEY));
+            this.tryAddEntity(entity);
+        }
+
+        return properties.length == Functions.OBSTACLE_NUM_PROPERTIES;
+    }
+
+    private boolean parseOre(String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.ORE_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.ORE_COL]),
+                    Integer.parseInt(properties[Functions.ORE_ROW]));
+            Entity entity = Entity.createOre(properties[Functions.ORE_ID], pt, Integer.parseInt(
+                    properties[Functions.ORE_ACTION_PERIOD]),
+                    imageStore.getImageList(Functions.ORE_KEY));
+            this.tryAddEntity(entity);
+        }
+
+        return properties.length == Functions.ORE_NUM_PROPERTIES;
+    }
+
+    private boolean parseSmith(String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.SMITH_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.SMITH_COL]),
+                    Integer.parseInt(properties[Functions.SMITH_ROW]));
+            Entity entity = Entity.createBlacksmith(properties[Functions.SMITH_ID], pt,
+                    imageStore.getImageList(Functions.SMITH_KEY));
+            this.tryAddEntity(entity);
+        }
+
+        return properties.length == Functions.SMITH_NUM_PROPERTIES;
+    }
+
+    private boolean parseVein(
+            String[] properties, ImageStore imageStore) {
+        if (properties.length == Functions.VEIN_NUM_PROPERTIES) {
+            Point pt = new Point(Integer.parseInt(properties[Functions.VEIN_COL]),
+                    Integer.parseInt(properties[Functions.VEIN_ROW]));
+            Entity entity = Entity.createVein(properties[Functions.VEIN_ID], pt,
+                    Integer.parseInt(
+                            properties[Functions.VEIN_ACTION_PERIOD]),
+                    imageStore.getImageList(Functions.VEIN_KEY));
+            this.tryAddEntity(entity);
+        }
+
+        return properties.length == Functions.VEIN_NUM_PROPERTIES;
+    }
+
+    private boolean processLine(
+            String line, ImageStore imageStore) {
+        String[] properties = line.split("\\s");
+        if (properties.length > 0) {
+            switch (properties[Functions.PROPERTY_KEY]) {
+                case Functions.BGND_KEY:
+                    return this.parseBackground(properties, imageStore);
+                case Functions.MINER_KEY:
+                    return this.parseMiner(properties, imageStore);
+                case Functions.OBSTACLE_KEY:
+                    return this.parseObstacle(properties, imageStore);
+                case Functions.ORE_KEY:
+                    return this.parseOre(properties, imageStore);
+                case Functions.SMITH_KEY:
+                    return this.parseSmith(properties, imageStore);
+                case Functions.VEIN_KEY:
+                    return this.parseVein(properties, imageStore);
+            }
+        }
+        return false;
+    }
+
+    private void tryAddEntity(Entity entity) {
+        if (this.isOccupied(entity.position)) {
+            // arguably the wrong type of exception, but we are not
+            // defining our own exceptions yet
+            throw new IllegalArgumentException("position occupied");
+        }
+
+        this.addEntity(entity);
+    }
+
+    public void load(Scanner in, ImageStore imageStore)
+    {
+        int lineNumber = 0;
+        while (in.hasNextLine()) {
+            try {
+                if (!this.processLine(in.nextLine(), imageStore)) {
+                    System.err.println(String.format("invalid entry on line %d",
+                            lineNumber));
+                }
+            }
+            catch (NumberFormatException e) {
+                System.err.println(
+                        String.format("invalid entry on line %d", lineNumber));
+            }
+            catch (IllegalArgumentException e) {
+                System.err.println(
+                        String.format("issue on line %d: %s", lineNumber,
+                                e.getMessage()));
+            }
+            lineNumber++;
+        }
+    }
+
+    private static Optional<Entity> nearestEntity(
+            List<Entity> entities, Point pos)
+    {
+        if (entities.isEmpty()) {
+            return Optional.empty();
+        }
+        else {
+            Entity nearest = entities.get(0);
+            int nearestDistance = nearest.position.distanceSquared(pos);
+
+            for (Entity other : entities) {
+                int otherDistance = other.position.distanceSquared(pos);
+
+                if (otherDistance < nearestDistance) {
+                    nearest = other;
+                    nearestDistance = otherDistance;
+                }
+            }
+
+            return Optional.of(nearest);
+        }
     }
 }
