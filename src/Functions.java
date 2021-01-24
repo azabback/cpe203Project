@@ -29,11 +29,7 @@ public final class Functions
     public static final int QUAKE_ANIMATION_PERIOD = 100;
     public static final int QUAKE_ANIMATION_REPEAT_COUNT = 10;
 
-    public static final int COLOR_MASK = 0xffffff;
     public static final int KEYED_IMAGE_MIN = 5;
-    private static final int KEYED_RED_IDX = 2;
-    private static final int KEYED_GREEN_IDX = 3;
-    private static final int KEYED_BLUE_IDX = 4;
 
     public static final int PROPERTY_KEY = 0;
 
@@ -79,105 +75,6 @@ public final class Functions
     public static final int VEIN_ACTION_PERIOD = 4;
 
 
-
-
-    public static void removePendingEvent(
-            EventScheduler scheduler, Event event)
-    {
-        List<Event> pending = scheduler.pendingEvents.get(event.entity);
-
-        if (pending != null) {
-            pending.remove(event);
-        }
-    }
-
-    public static void updateOnTime(EventScheduler scheduler, long time) {
-        while (!scheduler.eventQueue.isEmpty()
-                && scheduler.eventQueue.peek().time < time) {
-            Event next = scheduler.eventQueue.poll();
-
-            removePendingEvent(scheduler, next);
-
-            next.action.executeAction(scheduler);
-        }
-    }
-
-
-    public static void loadImages(
-            Scanner in, ImageStore imageStore, PApplet screen)
-    {
-        int lineNumber = 0;
-        while (in.hasNextLine()) {
-            try {
-                processImageLine(imageStore.images, in.nextLine(), screen);
-            }
-            catch (NumberFormatException e) {
-                System.out.println(
-                        String.format("Image format error on line %d",
-                                      lineNumber));
-            }
-            lineNumber++;
-        }
-    }
-
-    public static void processImageLine(
-            Map<String, List<PImage>> images, String line, PApplet screen)
-    {
-        String[] attrs = line.split("\\s");
-        if (attrs.length >= 2) {
-            String key = attrs[0];
-            PImage img = screen.loadImage(attrs[1]);
-            if (img != null && img.width != -1) {
-                List<PImage> imgs = getImages(images, key);
-                imgs.add(img);
-
-                if (attrs.length >= KEYED_IMAGE_MIN) {
-                    int r = Integer.parseInt(attrs[KEYED_RED_IDX]);
-                    int g = Integer.parseInt(attrs[KEYED_GREEN_IDX]);
-                    int b = Integer.parseInt(attrs[KEYED_BLUE_IDX]);
-                    setAlpha(img, screen.color(r, g, b), 0);
-                }
-            }
-        }
-    }
-
-    public static List<PImage> getImages(
-            Map<String, List<PImage>> images, String key)
-    {
-        List<PImage> imgs = images.get(key);
-        if (imgs == null) {
-            imgs = new LinkedList<>();
-            images.put(key, imgs);
-        }
-        return imgs;
-    }
-
-    /*
-      Called with color for which alpha should be set and alpha value.
-      setAlpha(img, color(255, 255, 255), 0));
-    */
-    public static void setAlpha(PImage img, int maskColor, int alpha) {
-        int alphaValue = alpha << 24;
-        int nonAlpha = maskColor & COLOR_MASK;
-        img.format = PApplet.ARGB;
-        img.loadPixels();
-        for (int i = 0; i < img.pixels.length; i++) {
-            if ((img.pixels[i] & COLOR_MASK) == nonAlpha) {
-                img.pixels[i] = alphaValue | nonAlpha;
-            }
-        }
-        img.updatePixels();
-    }
-
-    public static void shift(Viewport viewport, int col, int row) {
-        viewport.col = col;
-        viewport.row = row;
-    }
-
-    public static boolean contains(Viewport viewport, Point p) {
-        return p.y >= viewport.row && p.y < viewport.row + viewport.numRows
-                && p.x >= viewport.col && p.x < viewport.col + viewport.numCols;
-    }
 
     public static void load(
             Scanner in, WorldModel world, ImageStore imageStore)
@@ -234,7 +131,7 @@ public final class Functions
             Point pt = new Point(Integer.parseInt(properties[BGND_COL]),
                                  Integer.parseInt(properties[BGND_ROW]));
             String id = properties[BGND_ID];
-            setBackground(world, pt,
+            world.setBackground(pt,
                           new Background(id, imageStore.getImageList(id)));
         }
 
@@ -320,23 +217,16 @@ public final class Functions
     }
 
     public static void tryAddEntity(WorldModel world, Entity entity) {
-        if (isOccupied(world, entity.position)) {
+        if (world.isOccupied(entity.position)) {
             // arguably the wrong type of exception, but we are not
             // defining our own exceptions yet
             throw new IllegalArgumentException("position occupied");
         }
 
-        addEntity(world, entity);
+        world.addEntity(entity);
     }
 
-    public static boolean withinBounds(WorldModel world, Point pos) {
-        return pos.y >= 0 && pos.y < world.numRows && pos.x >= 0
-                && pos.x < world.numCols;
-    }
 
-    public static boolean isOccupied(WorldModel world, Point pos) {
-        return withinBounds(world, pos) && getOccupancyCell(world, pos) != null;
-    }
 
     public static Optional<Entity> nearestEntity(
             List<Entity> entities, Point pos)
@@ -346,10 +236,10 @@ public final class Functions
         }
         else {
             Entity nearest = entities.get(0);
-            int nearestDistance = distanceSquared(nearest.position, pos);
+            int nearestDistance = nearest.position.distanceSquared(pos);
 
             for (Entity other : entities) {
-                int otherDistance = distanceSquared(other.position, pos);
+                int otherDistance = other.position.distanceSquared(pos);
 
                 if (otherDistance < nearestDistance) {
                     nearest = other;
@@ -361,40 +251,10 @@ public final class Functions
         }
     }
 
-    public static int distanceSquared(Point p1, Point p2) {
-        int deltaX = p1.x - p2.x;
-        int deltaY = p1.y - p2.y;
-
-        return deltaX * deltaX + deltaY * deltaY;
-    }
-
-    public static Optional<Entity> findNearest(
-            WorldModel world, Point pos, EntityKind kind)
-    {
-        List<Entity> ofType = new LinkedList<>();
-        for (Entity entity : world.entities) {
-            if (entity.kind == kind) {
-                ofType.add(entity);
-            }
-        }
-
-        return nearestEntity(ofType, pos);
-    }
-
-    /*
-       Assumes that there is no entity currently occupying the
-       intended destination cell.
-    */
-    public static void addEntity(WorldModel world, Entity entity) {
-        if (withinBounds(world, entity.position)) {
-            setOccupancyCell(world, entity.position, entity);
-            world.entities.add(entity);
-        }
-    }
 
     public static void moveEntity(WorldModel world, Entity entity, Point pos) {
         Point oldPos = entity.position;
-        if (withinBounds(world, pos) && !pos.equals(oldPos)) {
+        if (world.withinBounds(pos) && !pos.equals(oldPos)) {
             setOccupancyCell(world, oldPos, null);
             removeEntityAt(world, pos);
             setOccupancyCell(world, pos, entity);
@@ -407,7 +267,7 @@ public final class Functions
     }
 
     public static void removeEntityAt(WorldModel world, Point pos) {
-        if (withinBounds(world, pos) && getOccupancyCell(world, pos) != null) {
+        if (world.withinBounds(pos) && getOccupancyCell(world, pos) != null) {
             Entity entity = getOccupancyCell(world, pos);
 
             /* This moves the entity just outside of the grid for
@@ -421,7 +281,7 @@ public final class Functions
     public static Optional<PImage> getBackgroundImage(
             WorldModel world, Point pos)
     {
-        if (withinBounds(world, pos)) {
+        if (world.withinBounds(pos)) {
             return Optional.of(getBackgroundCell(world, pos).getCurrentImage());
         }
         else {
@@ -429,16 +289,9 @@ public final class Functions
         }
     }
 
-    public static void setBackground(
-            WorldModel world, Point pos, Background background)
-    {
-        if (withinBounds(world, pos)) {
-            setBackgroundCell(world, pos, background);
-        }
-    }
 
     public static Optional<Entity> getOccupant(WorldModel world, Point pos) {
-        if (isOccupied(world, pos)) {
+        if (world.isOccupied(pos)) {
             return Optional.of(getOccupancyCell(world, pos));
         }
         else {
@@ -484,7 +337,7 @@ public final class Functions
         int newRow = clamp(view.viewport.row + rowDelta, 0,
                            view.world.numRows - view.viewport.numRows);
 
-        shift(view.viewport, newCol, newRow);
+        view.viewport.shift(newCol, newRow);
     }
 
     public static void drawBackground(WorldView view) {
@@ -505,7 +358,7 @@ public final class Functions
         for (Entity entity : view.world.entities) {
             Point pos = entity.position;
 
-            if (contains(view.viewport, pos)) {
+            if (view.viewport.contains(pos)) {
                 Point viewPoint = worldToViewport(view.viewport, pos.x, pos.y);
                 view.screen.image(entity.getCurrentImage(),
                                   viewPoint.x * view.tileWidth,

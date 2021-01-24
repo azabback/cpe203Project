@@ -64,7 +64,7 @@ public final class Entity
             EventScheduler scheduler)
     {
         Optional<Entity> fullTarget =
-                Functions.findNearest(world, this.position, EntityKind.BLACKSMITH);
+                world.findNearest(this.position, EntityKind.BLACKSMITH);
 
         if (fullTarget.isPresent() && this.moveToFull(world,
                 fullTarget.get(), scheduler))
@@ -84,7 +84,7 @@ public final class Entity
             EventScheduler scheduler)
     {
         Optional<Entity> notFullTarget =
-                Functions.findNearest(world, this.position, EntityKind.ORE);
+                world.findNearest(this.position, EntityKind.ORE);
 
         if (!notFullTarget.isPresent() || !this.moveToNotFull(world,
                 notFullTarget.get(),
@@ -114,7 +114,7 @@ public final class Entity
                                 - Functions.BLOB_ANIMATION_MIN),
                 imageStore.getImageList(Functions.BLOB_KEY));
 
-        Functions.addEntity(world, blob);
+        world.addEntity(blob);
         blob.scheduleActions(scheduler, world, imageStore);
     }
 
@@ -124,7 +124,7 @@ public final class Entity
             EventScheduler scheduler)
     {
         Optional<Entity> blobTarget =
-                Functions.findNearest(world, this.position, EntityKind.VEIN);
+                world.findNearest(this.position, EntityKind.VEIN);
         long nextPeriod = this.actionPeriod;
 
         if (blobTarget.isPresent()) {
@@ -134,7 +134,7 @@ public final class Entity
                 Entity quake = Functions.createQuake(tgtPos,
                         imageStore.getImageList(Functions.QUAKE_KEY));
 
-                Functions.addEntity(world, quake);
+                world.addEntity(quake);
                 nextPeriod += this.actionPeriod;
                 quake.scheduleActions(scheduler, world, imageStore);
             }
@@ -166,7 +166,7 @@ public final class Entity
                     Functions.ORE_CORRUPT_MIN + Functions.rand.nextInt(
                             Functions.ORE_CORRUPT_MAX - Functions.ORE_CORRUPT_MIN),
                     imageStore.getImageList(Functions.ORE_KEY));
-            Functions.addEntity(world, ore);
+            world.addEntity(ore);
             ore.scheduleActions(scheduler, world, imageStore);
         }
 
@@ -189,7 +189,7 @@ public final class Entity
             Functions.removeEntity(world, this);
             scheduler.unscheduleAllEvents(this);
 
-            Functions.addEntity(world, miner);
+            world.addEntity(miner);
             miner.scheduleActions(scheduler, world, imageStore);
 
             return true;
@@ -211,7 +211,7 @@ public final class Entity
         Functions.removeEntity(world, this);
         scheduler.unscheduleAllEvents(this);
 
-        Functions.addEntity(world, miner);
+        world.addEntity(miner);
         miner.scheduleActions(scheduler, world, imageStore);
     }
 
@@ -353,11 +353,11 @@ public final class Entity
         int horiz = Integer.signum(destPos.x - this.position.x);
         Point newPos = new Point(this.position.x + horiz, this.position.y);
 
-        if (horiz == 0 || Functions.isOccupied(world, newPos)) {
+        if (horiz == 0 || world.isOccupied(newPos)) {
             int vert = Integer.signum(destPos.y - this.position.y);
             newPos = new Point(this.position.x, this.position.y + vert);
 
-            if (vert == 0 || Functions.isOccupied(world, newPos)) {
+            if (vert == 0 || world.isOccupied(newPos)) {
                 newPos = this.position;
             }
         }
