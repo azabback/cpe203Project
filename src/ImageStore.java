@@ -11,6 +11,8 @@ public final class ImageStore
     private static final int KEYED_BLUE_IDX = 4;
     private static final int COLOR_MASK = 0xffffff;
 
+    private static final int KEYED_IMAGE_MIN = 5;
+
 
     public Map<String, List<PImage>> images;
     public List<PImage> defaultImages;
@@ -52,7 +54,7 @@ public final class ImageStore
                 List<PImage> imgs = this.getImages(key);
                 imgs.add(img);
 
-                if (attrs.length >= Functions.KEYED_IMAGE_MIN) {
+                if (attrs.length >= KEYED_IMAGE_MIN) {
                     int r = Integer.parseInt(attrs[KEYED_RED_IDX]);
                     int g = Integer.parseInt(attrs[KEYED_GREEN_IDX]);
                     int b = Integer.parseInt(attrs[KEYED_BLUE_IDX]);
