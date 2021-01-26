@@ -1,0 +1,7 @@
+I left no methods in the Functions.java file.
+
+Ambiguous Methods:
+- adjacent:
+	- I moved adjacent to Point.java because, in essence, adjacent is saying, “is this point close to this point?”. Therefore, it seemed logical to use adjacent to say, “is this other point close to my point?”.
+- getCurrentImage:
+	- I put getCurrentImage in both Background.java and Entity.java. This is because getCurrentImage used data from both Entity and Background, and both of those classes have an images instance variable, making it possible to do “this.” for each.
