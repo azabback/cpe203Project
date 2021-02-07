@@ -95,7 +95,7 @@ public final class Entity
         }
         else {
             scheduler.scheduleEvent(this,
-                    Action.createActivityAction(this, world, imageStore),
+                    Create.createActivityAction(this, world, imageStore),
                     this.actionPeriod);
         }
     }
@@ -114,7 +114,7 @@ public final class Entity
                 || !this.transformNotFull(world, scheduler, imageStore))
         {
             scheduler.scheduleEvent( this,
-                    Action.createActivityAction(this, world, imageStore),
+                    Create.createActivityAction(this, world, imageStore),
                     this.actionPeriod);
         }
     }
@@ -163,7 +163,7 @@ public final class Entity
         }
 
         scheduler.scheduleEvent( this,
-                Action.createActivityAction(this, world, imageStore),
+                Create.createActivityAction(this, world, imageStore),
                 nextPeriod);
     }
 
@@ -193,7 +193,7 @@ public final class Entity
         }
 
         scheduler.scheduleEvent(this,
-                Action.createActivityAction(this, world, imageStore),
+                Create.createActivityAction(this, world, imageStore),
                 this.actionPeriod);
     }
 
@@ -245,49 +245,49 @@ public final class Entity
         switch (this.kind) {
             case MINER_FULL:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Action.createAnimationAction(this, 0),
+                        Create.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case MINER_NOT_FULL:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Action.createAnimationAction(this, 0),
+                        Create.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case ORE:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 break;
 
             case ORE_BLOB:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 scheduler.scheduleEvent(this,
-                        Action.createAnimationAction(this, 0),
+                        Create.createAnimationAction(this, 0),
                         this.getAnimationPeriod());
                 break;
 
             case QUAKE:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
-                scheduler.scheduleEvent(this, Action.createAnimationAction(this,
+                scheduler.scheduleEvent(this, Create.createAnimationAction(this,
                         QUAKE_ANIMATION_REPEAT_COUNT),
                         this.getAnimationPeriod());
                 break;
 
             case VEIN:
                 scheduler.scheduleEvent(this,
-                        Action.createActivityAction(this, world, imageStore),
+                        Create.createActivityAction(this, world, imageStore),
                         this.actionPeriod);
                 break;
 
