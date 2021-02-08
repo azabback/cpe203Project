@@ -48,6 +48,8 @@ public class Vein implements Entity, ActiveEntity{
 
     public int getAnimationPeriod() { return this.animationPeriod; }
 
+    public void setPosition(Point p) { this.position = p; }
+
     public void executeActivity(
             WorldModel world,
             ImageStore imageStore,

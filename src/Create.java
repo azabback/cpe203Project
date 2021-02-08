@@ -59,7 +59,7 @@ public class Create {
         return new Ore(id, position, images, actionPeriod);
     }
 
-    public static Entity createOreBlob(
+    public static ActiveEntity createOreBlob(
             String id,
             Point position,
             int actionPeriod,

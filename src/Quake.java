@@ -40,6 +40,8 @@ public class Quake implements Entity, ActiveEntity{
 
     public EntityKind getKind(){ return EntityKind.QUAKE; }
 
+    public void setPosition(Point p) { this.position = p; }
+
     public void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }

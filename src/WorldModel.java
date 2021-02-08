@@ -97,7 +97,7 @@ public final class WorldModel {
     public Optional<Entity> findNearest(Point pos, EntityKind kind) {
         List<Entity> ofType = new LinkedList<>();
         for (Entity entity : this.entities) {
-            if (entity.kind == kind) {
+            if (entity.getKind() == kind) {
                 ofType.add(entity);
             }
         }
@@ -110,24 +110,24 @@ public final class WorldModel {
        intended destination cell.
     */
     public void addEntity(Entity entity) {
-        if (this.withinBounds(entity.position)) {
-            this.setOccupancyCell(entity.position, entity);
+        if (this.withinBounds(entity.getPosition())) {
+            this.setOccupancyCell(entity.getPosition(), entity);
             this.entities.add(entity);
         }
     }
 
     public void moveEntity(Entity entity, Point pos) {
-        Point oldPos = entity.position;
+        Point oldPos = entity.getPosition();
         if (this.withinBounds(pos) && !pos.equals(oldPos)) {
             this.setOccupancyCell(oldPos, null);
             this.removeEntityAt(pos);
             this.setOccupancyCell(pos, entity);
-            entity.position = pos;
+            entity.setPosition(pos);
         }
     }
 
     public void removeEntity(Entity entity) {
-        this.removeEntityAt(entity.position);
+        this.removeEntityAt(entity.getPosition());
     }
 
     private void removeEntityAt(Point pos) {
@@ -136,7 +136,7 @@ public final class WorldModel {
 
             /* This moves the entity just outside of the grid for
              * debugging purposes. */
-            entity.position = new Point(-1, -1);
+            entity.setPosition(new Point(-1, -1));
             this.entities.remove(entity);
             this.setOccupancyCell(pos, null);
         }
@@ -279,7 +279,7 @@ public final class WorldModel {
     }
 
     private void tryAddEntity(Entity entity) {
-        if (this.isOccupied(entity.position)) {
+        if (this.isOccupied(entity.getPosition())) {
             // arguably the wrong type of exception, but we are not
             // defining our own exceptions yet
             throw new IllegalArgumentException("position occupied");
@@ -319,10 +319,10 @@ public final class WorldModel {
         }
         else {
             Entity nearest = entities.get(0);
-            int nearestDistance = nearest.position.distanceSquared(pos);
+            int nearestDistance = nearest.getPosition().distanceSquared(pos);
 
             for (Entity other : entities) {
-                int otherDistance = other.position.distanceSquared(pos);
+                int otherDistance = other.getPosition().distanceSquared(pos);
 
                 if (otherDistance < nearestDistance) {
                     nearest = other;

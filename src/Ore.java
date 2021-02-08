@@ -46,6 +46,8 @@ public class Ore implements Entity, ActiveEntity{
 
     public int getAnimationPeriod() { return this.animationPeriod; }
 
+    public void setPosition(Point p) { this.position = p; }
+
     public void executeActivity(
             WorldModel world,
             ImageStore imageStore,
@@ -56,7 +58,7 @@ public class Ore implements Entity, ActiveEntity{
         world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);
 
-        Entity blob = Create.createOreBlob(this.id + BLOB_ID_SUFFIX, pos,
+        ActiveEntity blob = Create.createOreBlob(this.id + BLOB_ID_SUFFIX, pos,
                 this.actionPeriod / BLOB_PERIOD_SCALE,
                 BLOB_ANIMATION_MIN + rand.nextInt(
                         BLOB_ANIMATION_MAX

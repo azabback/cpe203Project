@@ -62,6 +62,8 @@ public class Ore_Blob implements Entity, ActiveEntity, MovingEntity{
 
     public Point getPosition(){ return this.position; }
 
+    public void setPosition(Point p) { this.position = p; }
+
     public EntityKind getKind(){ return EntityKind.ORE_BLOB; }
 
     public void executeActivity(
