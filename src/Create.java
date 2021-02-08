@@ -11,7 +11,7 @@ public class Create {
     }
 
     public static Action createActivityAction(
-            Entity entity, WorldModel world, ImageStore imageStore)
+            ActiveEntity entity, WorldModel world, ImageStore imageStore)
     {
         return new Activity(entity, world, imageStore, 0);
     }
@@ -75,8 +75,7 @@ public class Create {
     private static Entity createQuake(
             Point position, List<PImage> images)
     {
-        return new Entity(EntityKind.QUAKE, QUAKE_ID, position, images, 0, 0,
-                QUAKE_ACTION_PERIOD, QUAKE_ANIMATION_PERIOD);
+        return new Quake(position, images);
     }
 
     public static Entity createVein(
