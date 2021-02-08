@@ -7,7 +7,7 @@ import java.util.Random;
 public class Vein implements Entity, ActiveEntity{
 
     public String id;
-    public Point position;
+    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -41,6 +41,9 @@ public class Vein implements Entity, ActiveEntity{
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
+    public Point getPosition(){ return this.position; }
+
+    public EntityKind getKind(){ return EntityKind.VEIN; }
 
     public void executeActivity(
             WorldModel world,
@@ -50,7 +53,7 @@ public class Vein implements Entity, ActiveEntity{
         Optional<Point> openPt = world.findOpenAround(this.position);
 
         if (openPt.isPresent()) {
-            Entity ore = Create.createOre(ORE_ID_PREFIX + this.id, openPt.get(),
+            Ore ore = Create.createOre(ORE_ID_PREFIX + this.id, openPt.get(),
                     ORE_CORRUPT_MIN + rand.nextInt(
                             ORE_CORRUPT_MAX - ORE_CORRUPT_MIN),
                     imageStore.getImageList(ORE_KEY));
@@ -62,8 +65,6 @@ public class Vein implements Entity, ActiveEntity{
                 Create.createActivityAction(this, world, imageStore),
                 this.actionPeriod);
     }
-
-
 
     public void scheduleActions(
             EventScheduler scheduler,

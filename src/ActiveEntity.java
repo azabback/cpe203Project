@@ -10,5 +10,4 @@ public interface ActiveEntity {
             WorldModel world,
             ImageStore imageStore);
 
-    void nextImage();
 }

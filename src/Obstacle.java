@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Obstacle implements Entity{
     public String id;
-    public Point position;
+    private Point position;
     public List<PImage> images;
     public int imageIndex;
 
@@ -22,5 +22,9 @@ public class Obstacle implements Entity{
     public PImage getCurrentImage() {
         return this.images.get(this.imageIndex);
     }
+
+    public Point getPosition(){ return this.position; }
+
+    public EntityKind getKind(){ return EntityKind.OBSTACLE; }
 
 }

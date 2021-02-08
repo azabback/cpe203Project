@@ -8,7 +8,7 @@ public class Miner_not_Full {
 
     public EntityKind kind;
     public String id;
-    public Point position;
+    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int resourceLimit;
@@ -61,6 +61,10 @@ public class Miner_not_Full {
     public PImage getCurrentImage() {
         return this.images.get(this.imageIndex);
     }
+
+    public Point getPosition(){ return this.position; }
+
+    public EntityKind getKind(){ return EntityKind.MINER_NOT_FULL; }
 
     public int getAnimationPeriod() {
         switch (this.kind) {
@@ -350,13 +354,13 @@ public class Miner_not_Full {
             Entity target,
             EventScheduler scheduler)
     {
-        if (this.position.adjacent(target.position)) {
+        if (this.position.adjacent(target.getPosition())) {
             world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
             return true;
         }
         else {
-            Point nextPos = this.nextPositionOreBlob(world, target.position);
+            Point nextPos = this.nextPositionOreBlob(world, target.getPosition());
 
             if (!this.position.equals(nextPos)) {
                 Optional<Entity> occupant = world.getOccupant(nextPos);

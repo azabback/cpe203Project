@@ -7,4 +7,6 @@ import processing.core.PImage;
 public interface Entity
 {
     PImage getCurrentImage();
+    Point getPosition();
+    EntityKind getKind();
 }

@@ -2,11 +2,11 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public class Quake implements Entity, ActiveEntity{
+public class Quake implements Entity, ActiveEntity, AnimatedEntity{
 
 
     public String id;
-    public Point position;
+    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -36,6 +36,9 @@ public class Quake implements Entity, ActiveEntity{
 
     public int getAnimationPeriod() { return this.animationPeriod; }
 
+    public Point getPosition(){ return this.position; }
+
+    public EntityKind getKind(){ return EntityKind.QUAKE; }
 
     public void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();

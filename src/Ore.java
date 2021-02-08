@@ -6,11 +6,11 @@ import java.util.Random;
 public class Ore implements Entity, ActiveEntity{
 
     public String id;
-    public Point position;
+    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
-  
+
     private static final String BLOB_KEY = "blob";
     private static final String BLOB_ID_SUFFIX = " -- blob";
     private static final int BLOB_PERIOD_SCALE = 4;
@@ -35,11 +35,13 @@ public class Ore implements Entity, ActiveEntity{
         return this.images.get(this.imageIndex);
     }
 
-
     public void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
+    public Point getPosition(){ return this.position; }
+
+    public EntityKind getKind(){ return EntityKind.ORE; }
 
     public void executeActivity(
             WorldModel world,

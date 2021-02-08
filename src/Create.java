@@ -5,7 +5,7 @@ import java.util.List;
 public class Create {
 
 
-    public static Action createAnimationAction(Entity entity, int repeatCount) {
+    public static Action createAnimationAction(AnimatedEntity entity, int repeatCount) {
         return new Animation(entity, null, null,
                 repeatCount);
     }
@@ -53,7 +53,7 @@ public class Create {
         return new Obstacle(id, position, images);
     }
 
-    public static Entity createOre(
+    public static Ore createOre(
             String id, Point position, int actionPeriod, List<PImage> images)
     {
         return new Ore(id, position, images, actionPeriod);
@@ -66,11 +66,10 @@ public class Create {
             int animationPeriod,
             List<PImage> images)
     {
-        return new Ore_Blob(id, position, images, 0, 0,
-                actionPeriod, animationPeriod);
+        return new Ore_Blob(id, position, images, actionPeriod, animationPeriod);
     }
 
-    private static Entity createQuake(
+    public static Quake createQuake(
             Point position, List<PImage> images)
     {
         return new Quake(position, images);
@@ -79,7 +78,6 @@ public class Create {
     public static Entity createVein(
             String id, Point position, int actionPeriod, List<PImage> images)
     {
-        return new Vein(id, position, images, 0, 0,
-                actionPeriod, 0);
+        return new Vein(id, position, images, actionPeriod);
     }
 }
