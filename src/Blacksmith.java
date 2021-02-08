@@ -31,8 +31,6 @@ public class Blacksmith implements Entity{
 
     public Point getPosition(){ return this.position; }
 
-    public EntityKind getKind(){ return EntityKind.BLACKSMITH; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void setPosition(Point p) { this.position = p; }

@@ -30,8 +30,6 @@ public class Obstacle implements Entity{
 
     public Point getPosition(){ return this.position; }
 
-    public EntityKind getKind(){ return EntityKind.OBSTACLE; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void setPosition(Point p) { this.position = p; }

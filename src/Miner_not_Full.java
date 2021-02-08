@@ -37,8 +37,6 @@ public class Miner_not_Full implements Entity, ActiveEntity, MovingEntity{
 
     public Point getPosition(){ return this.position; }
 
-    public EntityKind getKind(){ return EntityKind.MINER_NOT_FULL; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void setPosition(Point p) { this.position = p; }
@@ -54,7 +52,7 @@ public class Miner_not_Full implements Entity, ActiveEntity, MovingEntity{
             EventScheduler scheduler)
     {
         Optional<Entity> notFullTarget =
-                world.findNearest(this.position, EntityKind.ORE);
+                world.findNearest(this.position, Ore.class);
 
         if (!notFullTarget.isPresent() || !this.moveToNotFull(world,
                 notFullTarget.get(),

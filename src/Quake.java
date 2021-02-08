@@ -38,8 +38,6 @@ public class Quake implements Entity, ActiveEntity{
 
     public Point getPosition(){ return this.position; }
 
-    public EntityKind getKind(){ return EntityKind.QUAKE; }
-
     public void setPosition(Point p) { this.position = p; }
 
     public void nextImage() {

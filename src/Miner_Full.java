@@ -39,8 +39,6 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
 
     public Point getPosition(){ return this.position; }
 
-    public EntityKind getKind(){ return EntityKind.MINER_FULL; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void setPosition(Point p) { this.position = p; }
@@ -55,7 +53,7 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
             EventScheduler scheduler)
     {
         Optional<Entity> fullTarget =
-                world.findNearest(this.position, EntityKind.BLACKSMITH);
+                world.findNearest(this.position, Blacksmith.class);
 
         if (fullTarget.isPresent() && this.moveToFull(world,
                 fullTarget.get(), scheduler))
