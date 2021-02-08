@@ -19,8 +19,7 @@ public class Create {
     public static Entity createBlacksmith(
             String id, Point position, List<PImage> images)
     {
-        return new Blacksmith(id, position, images, 0, 0, 0,
-                0);
+        return new Blacksmith(id, position, images);
     }
 
     public static Entity createMinerFull(
