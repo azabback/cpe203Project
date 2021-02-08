@@ -11,6 +11,7 @@ public class Vein implements Entity, ActiveEntity{
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
+    public int animationPeriod;
 
     private static final String ORE_ID_PREFIX = "ore -- ";
     private static final int ORE_CORRUPT_MIN = 20000;
@@ -44,6 +45,8 @@ public class Vein implements Entity, ActiveEntity{
     public Point getPosition(){ return this.position; }
 
     public EntityKind getKind(){ return EntityKind.VEIN; }
+
+    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,

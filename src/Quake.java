@@ -2,7 +2,7 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public class Quake implements Entity, ActiveEntity, AnimatedEntity{
+public class Quake implements Entity, ActiveEntity{
 
 
     public String id;

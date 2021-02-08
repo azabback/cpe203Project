@@ -5,7 +5,7 @@ import java.util.List;
 public class Create {
 
 
-    public static Action createAnimationAction(AnimatedEntity entity, int repeatCount) {
+    public static Action createAnimationAction(Entity entity, int repeatCount) {
         return new Animation(entity, null, null,
                 repeatCount);
     }
@@ -22,7 +22,7 @@ public class Create {
         return new Blacksmith(id, position, images);
     }
 
-    public static Entity createMinerFull(
+    public static Miner_Full createMinerFull(
             String id,
             int resourceLimit,
             Point position,
@@ -35,7 +35,7 @@ public class Create {
                 animationPeriod);
     }
 
-    public static Entity createMinerNotFull(
+    public static ActiveEntity createMinerNotFull(
             String id,
             int resourceLimit,
             Point position,

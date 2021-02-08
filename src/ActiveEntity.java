@@ -1,4 +1,4 @@
-public interface ActiveEntity {
+public interface ActiveEntity extends Entity{
 
     void executeActivity(
             WorldModel world,

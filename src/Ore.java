@@ -10,6 +10,7 @@ public class Ore implements Entity, ActiveEntity{
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
+    public int animationPeriod;
 
     private static final String BLOB_KEY = "blob";
     private static final String BLOB_ID_SUFFIX = " -- blob";
@@ -42,6 +43,8 @@ public class Ore implements Entity, ActiveEntity{
     public Point getPosition(){ return this.position; }
 
     public EntityKind getKind(){ return EntityKind.ORE; }
+
+    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,

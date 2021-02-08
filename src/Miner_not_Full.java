@@ -207,7 +207,7 @@ public class Miner_not_Full {
             ImageStore imageStore)
     {
         if (this.resourceCount >= this.resourceLimit) {
-            Entity miner = Entity.createMinerFull(this.id, this.resourceLimit,
+            Entity miner = Create.createMinerFull(this.id, this.resourceLimit,
                     this.position, this.actionPeriod,
                     this.animationPeriod,
                     this.images);
@@ -304,7 +304,7 @@ public class Miner_not_Full {
             Entity target,
             EventScheduler scheduler)
     {
-        if (this.position.adjacent(target.position)) {
+        if (this.position.adjacent(target.getPosition())) {
             this.resourceCount += 1;
             world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
@@ -312,7 +312,7 @@ public class Miner_not_Full {
             return true;
         }
         else {
-            Point nextPos = this.nextPositionMiner(world, target.position);
+            Point nextPos = this.nextPositionMiner(world, target.getPosition());
 
             if (!this.position.equals(nextPos)) {
                 Optional<Entity> occupant = world.getOccupant(nextPos);
@@ -331,11 +331,11 @@ public class Miner_not_Full {
             Entity target,
             EventScheduler scheduler)
     {
-        if (this.position.adjacent(target.position)) {
+        if (this.position.adjacent(target.getPosition())) {
             return true;
         }
         else {
-            Point nextPos = this.nextPositionMiner(world, target.position);
+            Point nextPos = this.nextPositionMiner(world, target.getPosition());
 
             if (!this.position.equals(nextPos)) {
                 Optional<Entity> occupant = world.getOccupant(nextPos);
