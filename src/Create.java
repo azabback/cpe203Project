@@ -44,7 +44,7 @@ public class Create {
             List<PImage> images)
     {
         return new Miner_not_Full(id, position, images,
-                resourceLimit, 0, actionPeriod, animationPeriod);
+                resourceLimit, actionPeriod, animationPeriod);
     }
 
     public static Entity createObstacle(
