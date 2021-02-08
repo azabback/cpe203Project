@@ -56,11 +56,10 @@ public class Create {
     public static Entity createOre(
             String id, Point position, int actionPeriod, List<PImage> images)
     {
-        return new Ore(id, position, images, 0, 0,
-                actionPeriod, 0);
+        return new Ore(id, position, images, actionPeriod);
     }
 
-    private static Entity createOreBlob(
+    public static Entity createOreBlob(
             String id,
             Point position,
             int actionPeriod,
