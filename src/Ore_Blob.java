@@ -56,7 +56,7 @@ public class Ore_Blob implements Entity, ActiveEntity, MovingEntity{
         if (blobTarget.isPresent()) {
             Point tgtPos = blobTarget.get().getPosition();
 
-            if (this.moveToOreBlob(world, blobTarget.get(), scheduler)) {
+            if (this.moveTo(world, blobTarget.get(), scheduler)) {
                 Quake quake = Create.createQuake(tgtPos,
                         imageStore.getImageList(QUAKE_KEY));
 
@@ -84,7 +84,7 @@ public class Ore_Blob implements Entity, ActiveEntity, MovingEntity{
                 this.getAnimationPeriod());
     }
 
-    public boolean moveToOreBlob(
+    public boolean moveTo(
             WorldModel world,
             Entity target,
             EventScheduler scheduler)

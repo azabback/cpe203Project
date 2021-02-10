@@ -55,7 +55,7 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
         Optional<Entity> fullTarget =
                 world.findNearest(this.position, Blacksmith.class);
 
-        if (fullTarget.isPresent() && this.moveToFull(world,
+        if (fullTarget.isPresent() && this.moveTo(world,
                 fullTarget.get(), scheduler))
         {
             this.transformFull(world, scheduler, imageStore);
@@ -99,7 +99,7 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
     }
 
 
-    public boolean moveToFull(
+    public boolean moveTo(
             WorldModel world,
             Entity target,
             EventScheduler scheduler)

@@ -54,7 +54,7 @@ public class Miner_not_Full implements Entity, ActiveEntity, MovingEntity{
         Optional<Entity> notFullTarget =
                 world.findNearest(this.position, Ore.class);
 
-        if (!notFullTarget.isPresent() || !this.moveToNotFull(world,
+        if (!notFullTarget.isPresent() || !this.moveTo(world,
                 notFullTarget.get(),
                 scheduler)
                 || !this.transformNotFull(world, scheduler, imageStore))
@@ -104,7 +104,7 @@ public class Miner_not_Full implements Entity, ActiveEntity, MovingEntity{
                 this.getAnimationPeriod());
     }
 
-    public boolean moveToNotFull(
+    public boolean moveTo(
             WorldModel world,
             Entity target,
             EventScheduler scheduler)
