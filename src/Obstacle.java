@@ -4,8 +4,6 @@ import java.util.List;
 
 public class Obstacle extends Entity{
 
-    public List<PImage> images;
-    public int imageIndex;
     public int animationPeriod;
 
     public Obstacle(
@@ -13,17 +11,7 @@ public class Obstacle extends Entity{
             Point position,
             List<PImage> images)
     {
-        super(id, position);
-        this.images = images;
-        this.imageIndex = 0;
-    }
-
-    public PImage getCurrentImage() {
-        return this.images.get(this.imageIndex);
-    }
-
-    public void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
+        super(id, position, images);
     }
 
     public int getAnimationPeriod() { return this.animationPeriod; }

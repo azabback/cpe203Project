@@ -5,8 +5,6 @@ import java.util.Optional;
 
 public class Miner_not_Full extends ActiveEntity implements MovingEntity {
 
-    public List<PImage> images;
-    public int imageIndex;
     public int resourceLimit;
     public int resourceCount;
     public int actionPeriod;
@@ -21,23 +19,14 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
             int actionPeriod,
             int animationPeriod)
     {
-        super(id, position);
-        this.images = images;
-        this.imageIndex = 0;
+        super(id, position, images);
         this.resourceLimit = resourceLimit;
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
     }
 
-    public PImage getCurrentImage() {
-        return this.images.get(this.imageIndex);
-    }
 
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
-    }
 
 
     public void executeActivity(
@@ -70,7 +59,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
             ActiveEntity miner = Create.createMinerFull(this.getID(), this.resourceLimit,
                     this.getPosition(), this.actionPeriod,
                     this.animationPeriod,
-                    this.images);
+                    this.getImages());
 
             world.removeEntity(this);
             scheduler.unscheduleAllEvents(this);

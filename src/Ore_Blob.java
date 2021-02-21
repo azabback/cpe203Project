@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Ore_Blob extends ActiveEntity implements MovingEntity{
 
-    public List<PImage> images;
-    public int imageIndex;
     public int actionPeriod;
     public int animationPeriod;
 
@@ -21,22 +19,13 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
             int actionPeriod,
             int animationPeriod)
     {
-        super(id, position);
-        this.images = images;
-        this.imageIndex = 0;
+        super(id, position, images);
         this.actionPeriod = actionPeriod;
         this.animationPeriod = animationPeriod;
     }
 
-    public PImage getCurrentImage() {
-        return this.images.get(this.imageIndex);
-    }
 
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
-    }
 
     public void executeActivity(
             WorldModel world,

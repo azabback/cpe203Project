@@ -6,8 +6,6 @@ import java.util.Random;
 
 public class Vein extends ActiveEntity{
 
-    public List<PImage> images;
-    public int imageIndex;
     public int actionPeriod;
     public int animationPeriod;
 
@@ -25,18 +23,8 @@ public class Vein extends ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        super(id, position);
-        this.images = images;
-        this.imageIndex = 0;
+        super(id, position, images);
         this.actionPeriod = actionPeriod;
-    }
-
-    public PImage getCurrentImage() {
-        return this.images.get(this.imageIndex);
-    }
-
-    public void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
     public int getAnimationPeriod() { return this.animationPeriod; }

@@ -1,17 +1,21 @@
 import processing.core.PImage;
 
+import java.util.List;
+
 public abstract class Entity
 {
     private String id;
     private Point position;
+    private List<PImage> images;
+    private int imageIndex;
 
-    abstract PImage getCurrentImage();
-    abstract void nextImage();
     abstract int getAnimationPeriod();
 
-    public Entity(String id, Point position){
+    public Entity(String id, Point position, List<PImage> images){
         this.id = id;
         this.position = position;
+        this.images = images;
+        this.imageIndex = 0;
     }
 
     public String getID(){
@@ -24,5 +28,17 @@ public abstract class Entity
 
     public void setPosition(Point p) {
         this.position = p;
+    }
+
+    public PImage getCurrentImage() {
+        return this.images.get(this.imageIndex);
+    }
+
+    public void nextImage() {
+        this.imageIndex = (this.imageIndex + 1) % this.images.size();
+    }
+
+    public List<PImage> getImages(){
+        return this.images;
     }
 }
