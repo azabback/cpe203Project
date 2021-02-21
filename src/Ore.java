@@ -41,13 +41,4 @@ public class Ore extends ActiveEntity{
         world.addEntity(blob);
         blob.scheduleActions(scheduler, world, imageStore);
     }
-
-
-    public void scheduleActions(
-            EventScheduler scheduler,
-            WorldModel world,
-            ImageStore imageStore)
-    {
-        scheduler.scheduleEvent(this, new Activity(this, world, imageStore), this.getActionPeriod());
-    }
 }
