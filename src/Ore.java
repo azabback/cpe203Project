@@ -3,9 +3,8 @@ import processing.core.PImage;
 import java.util.List;
 import java.util.Random;
 
-public class Ore implements Entity, ActiveEntity{
+public class Ore extends ActiveEntity{
 
-    public String id;
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -25,7 +24,7 @@ public class Ore implements Entity, ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        this.id = id;
+        super(id);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;
@@ -56,7 +55,7 @@ public class Ore implements Entity, ActiveEntity{
         world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);
 
-        ActiveEntity blob = Create.createOreBlob(this.id + BLOB_ID_SUFFIX, pos,
+        ActiveEntity blob = Create.createOreBlob(this.getID() + BLOB_ID_SUFFIX, pos,
                 this.actionPeriod / BLOB_PERIOD_SCALE,
                 BLOB_ANIMATION_MIN + rand.nextInt(
                         BLOB_ANIMATION_MAX

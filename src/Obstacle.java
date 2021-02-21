@@ -2,8 +2,8 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public class Obstacle implements Entity{
-    public String id;
+public class Obstacle extends Entity{
+
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -14,7 +14,7 @@ public class Obstacle implements Entity{
             Point position,
             List<PImage> images)
     {
-        this.id = id;
+        super(id);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;

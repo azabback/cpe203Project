@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class Ore_Blob implements Entity, ActiveEntity, MovingEntity{
-    public String id;
+public class Ore_Blob extends ActiveEntity implements MovingEntity{
+
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -22,7 +22,7 @@ public class Ore_Blob implements Entity, ActiveEntity, MovingEntity{
             int actionPeriod,
             int animationPeriod)
     {
-        this.id = id;
+        super(id);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;

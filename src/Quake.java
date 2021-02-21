@@ -2,10 +2,8 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public class Quake implements Entity, ActiveEntity{
+public class Quake extends ActiveEntity{
 
-
-    public String id;
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -22,7 +20,7 @@ public class Quake implements Entity, ActiveEntity{
             Point position,
             List<PImage> images)
     {
-        this.id = QUAKE_ID;
+        super(QUAKE_ID);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;

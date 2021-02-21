@@ -1,13 +1,17 @@
-public interface ActiveEntity extends Entity{
+public abstract class ActiveEntity extends Entity{
 
-    void executeActivity(
+    abstract void executeActivity(
             WorldModel world,
             ImageStore imageStore,
             EventScheduler scheduler);
 
-    void scheduleActions(
+    abstract void scheduleActions(
             EventScheduler scheduler,
             WorldModel world,
             ImageStore imageStore);
+
+    public ActiveEntity(String id){
+        super(id);
+    }
 
 }

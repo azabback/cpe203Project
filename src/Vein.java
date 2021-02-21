@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class Vein implements Entity, ActiveEntity{
+public class Vein extends ActiveEntity{
 
-    public String id;
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -27,7 +26,7 @@ public class Vein implements Entity, ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        this.id = id;
+        super(id);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;
@@ -56,7 +55,7 @@ public class Vein implements Entity, ActiveEntity{
         Optional<Point> openPt = world.findOpenAround(this.position);
 
         if (openPt.isPresent()) {
-            Ore ore = Create.createOre(ORE_ID_PREFIX + this.id, openPt.get(),
+            Ore ore = Create.createOre(ORE_ID_PREFIX + this.getID(), openPt.get(),
                     ORE_CORRUPT_MIN + rand.nextInt(
                             ORE_CORRUPT_MAX - ORE_CORRUPT_MIN),
                     imageStore.getImageList(ORE_KEY));

@@ -3,8 +3,7 @@ import processing.core.PImage;
 import java.util.List;
 import java.util.Optional;
 
-public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
-    public String id;
+public class Miner_Full extends ActiveEntity implements MovingEntity {
     private Point position;
     public List<PImage> images;
     public int imageIndex;
@@ -23,7 +22,7 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
             int actionPeriod,
             int animationPeriod)
     {
-        this.id = id;
+        super(id);
         this.position = position;
         this.images = images;
         this.imageIndex = 0;
@@ -73,7 +72,7 @@ public class Miner_Full implements Entity, ActiveEntity, MovingEntity{
             EventScheduler scheduler,
             ImageStore imageStore)
     {
-        ActiveEntity miner = Create.createMinerNotFull(this.id, this.resourceLimit,
+        ActiveEntity miner = Create.createMinerNotFull(this.getID(), this.resourceLimit,
                 this.position, this.actionPeriod,
                 this.animationPeriod,
                 this.images);
