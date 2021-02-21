@@ -190,13 +190,11 @@ public final class WorldModel {
         if (properties.length == MINER_NUM_PROPERTIES) {
             Point pt = new Point(Integer.parseInt(properties[MINER_COL]),
                     Integer.parseInt(properties[MINER_ROW]));
-            Entity entity = Create.createMinerNotFull(properties[MINER_ID],
+            Entity entity = new Miner_not_Full(properties[MINER_ID], pt, imageStore.getImageList(MINER_KEY),
+                    Integer.parseInt(properties[MINER_LIMIT]),
                     Integer.parseInt(
-                            properties[MINER_LIMIT]),
-                    pt, Integer.parseInt(
                             properties[MINER_ACTION_PERIOD]), Integer.parseInt(
-                            properties[MINER_ANIMATION_PERIOD]),
-                    imageStore.getImageList(MINER_KEY));
+                            properties[MINER_ANIMATION_PERIOD]));
             this.tryAddEntity(entity);
         }
 
@@ -208,7 +206,7 @@ public final class WorldModel {
         if (properties.length == OBSTACLE_NUM_PROPERTIES) {
             Point pt = new Point(Integer.parseInt(properties[OBSTACLE_COL]),
                     Integer.parseInt(properties[OBSTACLE_ROW]));
-            Entity entity = Create.createObstacle(properties[OBSTACLE_ID], pt,
+            Entity entity = new Obstacle(properties[OBSTACLE_ID], pt,
                     imageStore.getImageList(OBSTACLE_KEY));
             this.tryAddEntity(entity);
         }
@@ -220,9 +218,8 @@ public final class WorldModel {
         if (properties.length == ORE_NUM_PROPERTIES) {
             Point pt = new Point(Integer.parseInt(properties[ORE_COL]),
                     Integer.parseInt(properties[ORE_ROW]));
-            Entity entity = Create.createOre(properties[ORE_ID], pt, Integer.parseInt(
-                    properties[ORE_ACTION_PERIOD]),
-                    imageStore.getImageList(ORE_KEY));
+            Entity entity = new Ore(properties[ORE_ID], pt, imageStore.getImageList(ORE_KEY),
+                    Integer.parseInt(properties[ORE_ACTION_PERIOD]));
             this.tryAddEntity(entity);
         }
 
@@ -233,7 +230,7 @@ public final class WorldModel {
         if (properties.length == SMITH_NUM_PROPERTIES) {
             Point pt = new Point(Integer.parseInt(properties[SMITH_COL]),
                     Integer.parseInt(properties[SMITH_ROW]));
-            Entity entity = Create.createBlacksmith(properties[SMITH_ID], pt,
+            Entity entity = new Blacksmith(properties[SMITH_ID], pt,
                     imageStore.getImageList(SMITH_KEY));
             this.tryAddEntity(entity);
         }
@@ -246,10 +243,8 @@ public final class WorldModel {
         if (properties.length == VEIN_NUM_PROPERTIES) {
             Point pt = new Point(Integer.parseInt(properties[VEIN_COL]),
                     Integer.parseInt(properties[VEIN_ROW]));
-            Entity entity = Create.createVein(properties[VEIN_ID], pt,
-                    Integer.parseInt(
-                            properties[VEIN_ACTION_PERIOD]),
-                    imageStore.getImageList(VEIN_KEY));
+            Entity entity = new Vein(properties[VEIN_ID], pt, imageStore.getImageList(VEIN_KEY),
+                    Integer.parseInt(properties[VEIN_ACTION_PERIOD]));
             this.tryAddEntity(entity);
         }
 

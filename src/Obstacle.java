@@ -4,8 +4,6 @@ import java.util.List;
 
 public class Obstacle extends Entity{
 
-    public int animationPeriod;
-
     public Obstacle(
             String id,
             Point position,
@@ -13,7 +11,4 @@ public class Obstacle extends Entity{
     {
         super(id, position, images);
     }
-
-    public int getAnimationPeriod() { return this.animationPeriod; }
-
 }

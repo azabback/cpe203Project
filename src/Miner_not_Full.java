@@ -45,10 +45,10 @@ public class Miner_not_Full extends MinerEntity {
             ImageStore imageStore)
     {
         if (this.getResourceCount() >= this.getResourceLimit()) {
-            ActiveEntity miner = Create.createMinerFull(this.getID(), this.getResourceLimit(),
-                    this.getPosition(), this.getActionPeriod(),
-                    this.getAnimationPeriod(),
-                    this.getImages());
+            ActiveEntity miner = new Miner_Full(this.getID(),
+                    this.getPosition(),this.getImages(), this.getResourceLimit(), this.getResourceCount(),
+                    this.getActionPeriod(),
+                    this.getAnimationPeriod());
 
             world.removeEntity(this);
             scheduler.unscheduleAllEvents(this);

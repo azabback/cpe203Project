@@ -32,12 +32,11 @@ public class Ore extends ActiveEntity{
         world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);
 
-        ActiveEntity blob = Create.createOreBlob(this.getID() + BLOB_ID_SUFFIX, pos,
+        ActiveEntity blob = new Ore_Blob(this.getID() + BLOB_ID_SUFFIX, pos, imageStore.getImageList(BLOB_KEY),
                 this.getActionPeriod() / BLOB_PERIOD_SCALE,
                 BLOB_ANIMATION_MIN + rand.nextInt(
                         BLOB_ANIMATION_MAX
-                                - BLOB_ANIMATION_MIN),
-                imageStore.getImageList(BLOB_KEY));
+                                - BLOB_ANIMATION_MIN));
 
         world.addEntity(blob);
         blob.scheduleActions(scheduler, world, imageStore);
