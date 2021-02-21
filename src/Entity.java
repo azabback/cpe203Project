@@ -7,13 +7,11 @@ public abstract class Entity
     private String id;
     private Point position;
     private List<PImage> images;
-    private int imageIndex;
 
     public Entity(String id, Point position, List<PImage> images){
         this.id = id;
         this.position = position;
         this.images = images;
-        this.imageIndex = 0;
     }
 
     protected String getID(){
@@ -29,14 +27,10 @@ public abstract class Entity
     }
 
     protected PImage getCurrentImage() {
-        return this.images.get(this.imageIndex);
+        return this.images.get(0);
     }
 
     protected List<PImage> getImages(){
         return this.images;
-    }
-
-    protected void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 }
