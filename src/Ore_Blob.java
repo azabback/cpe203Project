@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Ore_Blob extends ActiveEntity implements MovingEntity{
 
-    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -22,8 +21,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
             int actionPeriod,
             int animationPeriod)
     {
-        super(id);
-        this.position = position;
+        super(id, position);
         this.images = images;
         this.imageIndex = 0;
         this.actionPeriod = actionPeriod;
@@ -40,17 +38,13 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
-    public Point getPosition(){ return this.position; }
-
-    public void setPosition(Point p) { this.position = p; }
-
     public void executeActivity(
             WorldModel world,
             ImageStore imageStore,
             EventScheduler scheduler)
     {
         Optional<Entity> blobTarget =
-                world.findNearest(this.position, Vein.class);
+                world.findNearest(this.getPosition(), Vein.class);
         long nextPeriod = this.actionPeriod;
 
         if (blobTarget.isPresent()) {
@@ -89,7 +83,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
             Entity target,
             EventScheduler scheduler)
     {
-        if (this.position.adjacent(target.getPosition())) {
+        if (this.getPosition().adjacent(target.getPosition())) {
             world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
             return true;
@@ -97,7 +91,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
         else {
             Point nextPos = this.nextPosition(world, target.getPosition());
 
-            if (!this.position.equals(nextPos)) {
+            if (!this.getPosition().equals(nextPos)) {
                 Optional<Entity> occupant = world.getOccupant(nextPos);
                 if (occupant.isPresent()) {
                     scheduler.unscheduleAllEvents(occupant.get());
@@ -112,22 +106,22 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
 
     public Point nextPosition(WorldModel world, Point destPos)
     {
-        int horiz = Integer.signum(destPos.x - this.position.x);
-        Point newPos = new Point(this.position.x + horiz, this.position.y);
+        int horiz = Integer.signum(destPos.x - this.getPosition().x);
+        Point newPos = new Point(this.getPosition().x + horiz, this.getPosition().y);
 
         Optional<Entity> occupant = world.getOccupant(newPos);
 
         if (horiz == 0 || (occupant.isPresent() && !(occupant.get().getClass()
                 == Ore.class)))
         {
-            int vert = Integer.signum(destPos.y - this.position.y);
-            newPos = new Point(this.position.x, this.position.y + vert);
+            int vert = Integer.signum(destPos.y - this.getPosition().y);
+            newPos = new Point(this.getPosition().x, this.getPosition().y + vert);
             occupant = world.getOccupant(newPos);
 
             if (vert == 0 || (occupant.isPresent() && !(occupant.get().getClass()
                     == Ore.class)))
             {
-                newPos = this.position;
+                newPos = this.getPosition();
             }
         }
 

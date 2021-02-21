@@ -3,7 +3,7 @@ import processing.core.PImage;
 import java.util.List;
 
 public class Blacksmith extends Entity{
-    private Point position;
+
     public List<PImage> images;
     public int imageIndex;
     public int animationPeriod;
@@ -14,8 +14,7 @@ public class Blacksmith extends Entity{
             Point position,
             List<PImage> images)
     {
-        super(id);
-        this.position = position;
+        super(id, position);
         this.images = images;
         this.imageIndex = 0;
     }
@@ -28,10 +27,7 @@ public class Blacksmith extends Entity{
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
-    public Point getPosition(){ return this.position; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
 
-    public void setPosition(Point p) { this.position = p; }
 
 }

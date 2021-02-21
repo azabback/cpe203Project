@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Vein extends ActiveEntity{
 
-    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -26,8 +25,7 @@ public class Vein extends ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        super(id);
-        this.position = position;
+        super(id, position);
         this.images = images;
         this.imageIndex = 0;
         this.actionPeriod = actionPeriod;
@@ -41,18 +39,14 @@ public class Vein extends ActiveEntity{
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
-    public Point getPosition(){ return this.position; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public void setPosition(Point p) { this.position = p; }
 
     public void executeActivity(
             WorldModel world,
             ImageStore imageStore,
             EventScheduler scheduler)
     {
-        Optional<Point> openPt = world.findOpenAround(this.position);
+        Optional<Point> openPt = world.findOpenAround(this.getPosition());
 
         if (openPt.isPresent()) {
             Ore ore = Create.createOre(ORE_ID_PREFIX + this.getID(), openPt.get(),

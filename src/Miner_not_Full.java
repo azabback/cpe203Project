@@ -5,7 +5,6 @@ import java.util.Optional;
 
 public class Miner_not_Full extends ActiveEntity implements MovingEntity {
 
-    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int resourceLimit;
@@ -22,8 +21,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
             int actionPeriod,
             int animationPeriod)
     {
-        super(id);
-        this.position = position;
+        super(id, position);
         this.images = images;
         this.imageIndex = 0;
         this.resourceLimit = resourceLimit;
@@ -35,11 +33,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
         return this.images.get(this.imageIndex);
     }
 
-    public Point getPosition(){ return this.position; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public void setPosition(Point p) { this.position = p; }
 
     public void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
@@ -52,7 +46,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
             EventScheduler scheduler)
     {
         Optional<Entity> notFullTarget =
-                world.findNearest(this.position, Ore.class);
+                world.findNearest(this.getPosition(), Ore.class);
 
         if (!notFullTarget.isPresent() || !this.moveTo(world,
                 notFullTarget.get(),
@@ -74,7 +68,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
     {
         if (this.resourceCount >= this.resourceLimit) {
             ActiveEntity miner = Create.createMinerFull(this.getID(), this.resourceLimit,
-                    this.position, this.actionPeriod,
+                    this.getPosition(), this.actionPeriod,
                     this.animationPeriod,
                     this.images);
 
@@ -109,7 +103,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
             Entity target,
             EventScheduler scheduler)
     {
-        if (this.position.adjacent(target.getPosition())) {
+        if (this.getPosition().adjacent(target.getPosition())) {
             this.resourceCount += 1;
             world.removeEntity(target);
             scheduler.unscheduleAllEvents(target);
@@ -119,7 +113,7 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
         else {
             Point nextPos = this.nextPosition(world, target.getPosition());
 
-            if (!this.position.equals(nextPos)) {
+            if (!this.getPosition().equals(nextPos)) {
                 Optional<Entity> occupant = world.getOccupant(nextPos);
                 if (occupant.isPresent()) {
                     scheduler.unscheduleAllEvents(occupant.get());
@@ -134,15 +128,15 @@ public class Miner_not_Full extends ActiveEntity implements MovingEntity {
 
     public Point nextPosition(WorldModel world, Point destPos)
     {
-        int horiz = Integer.signum(destPos.x - this.position.x);
-        Point newPos = new Point(this.position.x + horiz, this.position.y);
+        int horiz = Integer.signum(destPos.x - this.getPosition().x);
+        Point newPos = new Point(this.getPosition().x + horiz, this.getPosition().y);
 
         if (horiz == 0 || world.isOccupied(newPos)) {
-            int vert = Integer.signum(destPos.y - this.position.y);
-            newPos = new Point(this.position.x, this.position.y + vert);
+            int vert = Integer.signum(destPos.y - this.getPosition().y);
+            newPos = new Point(this.getPosition().x, this.getPosition().y + vert);
 
             if (vert == 0 || world.isOccupied(newPos)) {
-                newPos = this.position;
+                newPos = this.getPosition();
             }
         }
 

@@ -10,8 +10,8 @@ public abstract class ActiveEntity extends Entity{
             WorldModel world,
             ImageStore imageStore);
 
-    public ActiveEntity(String id){
-        super(id);
+    public ActiveEntity(String id, Point position){
+        super(id, position);
     }
 
 }

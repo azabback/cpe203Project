@@ -5,7 +5,6 @@ import java.util.Random;
 
 public class Ore extends ActiveEntity{
 
-    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -24,8 +23,7 @@ public class Ore extends ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        super(id);
-        this.position = position;
+        super(id, position);
         this.images = images;
         this.imageIndex = 0;
         this.actionPeriod = actionPeriod;
@@ -39,18 +37,14 @@ public class Ore extends ActiveEntity{
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 
-    public Point getPosition(){ return this.position; }
-
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public void setPosition(Point p) { this.position = p; }
 
     public void executeActivity(
             WorldModel world,
             ImageStore imageStore,
             EventScheduler scheduler)
     {
-        Point pos = this.position;
+        Point pos = this.getPosition();
 
         world.removeEntity(this);
         scheduler.unscheduleAllEvents(this);

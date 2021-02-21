@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Quake extends ActiveEntity{
 
-    private Point position;
     public List<PImage> images;
     public int imageIndex;
     public int actionPeriod;
@@ -20,8 +19,7 @@ public class Quake extends ActiveEntity{
             Point position,
             List<PImage> images)
     {
-        super(QUAKE_ID);
-        this.position = position;
+        super(QUAKE_ID, position);
         this.images = images;
         this.imageIndex = 0;
         this.actionPeriod = QUAKE_ACTION_PERIOD;
@@ -33,10 +31,6 @@ public class Quake extends ActiveEntity{
     }
 
     public int getAnimationPeriod() { return this.animationPeriod; }
-
-    public Point getPosition(){ return this.position; }
-
-    public void setPosition(Point p) { this.position = p; }
 
     public void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();

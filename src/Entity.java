@@ -3,18 +3,26 @@ import processing.core.PImage;
 public abstract class Entity
 {
     private String id;
+    private Point position;
 
     abstract PImage getCurrentImage();
-    abstract Point getPosition();
     abstract void nextImage();
     abstract int getAnimationPeriod();
-    abstract void setPosition(Point p);
 
-    public Entity(String id){
+    public Entity(String id, Point position){
         this.id = id;
+        this.position = position;
     }
 
     public String getID(){
         return this.id;
+    }
+
+    public Point getPosition(){
+        return this.position;
+    }
+
+    public void setPosition(Point p) {
+        this.position = p;
     }
 }
