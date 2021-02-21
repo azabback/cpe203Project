@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class Ore_Blob extends AnimatedEntity implements MovingEntity{
+public class Ore_Blob extends MovingEntity{
 
     private static final String QUAKE_KEY = "quake";
 
@@ -45,18 +45,7 @@ public class Ore_Blob extends AnimatedEntity implements MovingEntity{
                 nextPeriod);
     }
 
-    public void scheduleActions(
-            EventScheduler scheduler,
-            WorldModel world,
-            ImageStore imageStore)
-    {
-        scheduler.scheduleEvent(this,
-                Create.createActivityAction(this, world, imageStore),
-                this.getActionPeriod());
-        scheduler.scheduleEvent(this,
-                Create.createAnimationAction(this, 0),
-                this.getAnimationPeriod());
-    }
+
 
     public boolean moveTo(
             WorldModel world,

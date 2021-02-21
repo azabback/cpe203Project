@@ -1,8 +1,29 @@
-public interface MovingEntity {
+import processing.core.PImage;
 
-    Point nextPosition(WorldModel world, Point destPos);
-    boolean moveTo(
+import java.util.List;
+
+public abstract class MovingEntity extends AnimatedEntity {
+
+    public MovingEntity(String id, Point position, List<PImage> images, int actionPeriod, int animationPeriod){
+        super(id, position, images, actionPeriod, animationPeriod);
+    }
+
+    public void scheduleActions(
+            EventScheduler scheduler,
             WorldModel world,
-            Entity target,
-            EventScheduler scheduler);
+            ImageStore imageStore)
+    {
+        scheduler.scheduleEvent(this,
+                Create.createActivityAction(this, world, imageStore),
+                this.getActionPeriod());
+        scheduler.scheduleEvent(this,
+                Create.createAnimationAction(this, 0),
+                this.getAnimationPeriod());
+    }
+
+    abstract Point nextPosition(WorldModel world, Point destPos);
+
+    abstract boolean moveTo(WorldModel world,
+                            Entity target,
+                            EventScheduler scheduler);
 }

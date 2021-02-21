@@ -32,11 +32,11 @@ public abstract class Entity
         return this.images.get(this.imageIndex);
     }
 
-    public void nextImage() {
-        this.imageIndex = (this.imageIndex + 1) % this.images.size();
-    }
-
     public List<PImage> getImages(){
         return this.images;
+    }
+
+    public void nextImage() {
+        this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 }
