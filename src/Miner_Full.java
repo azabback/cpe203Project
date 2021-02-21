@@ -34,8 +34,7 @@ public class Miner_Full extends MinerEntity {
         }
         else {
             scheduler.scheduleEvent(this,
-                    Create.createActivityAction(this, world, imageStore),
-                    this.getActionPeriod());
+                    new Activity(this, world, imageStore), this.getActionPeriod());
         }
     }
 

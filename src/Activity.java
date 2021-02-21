@@ -8,13 +8,12 @@ public class Activity implements Action {
     public Activity(
             ActiveEntity entity,
             WorldModel world,
-            ImageStore imageStore,
-            int repeatCount)
+            ImageStore imageStore)
     {
         this.entity = entity;
         this.world = world;
         this.imageStore = imageStore;
-        this.repeatCount = repeatCount;
+        this.repeatCount = 0;
     }
 
     public void executeAction(EventScheduler scheduler)

@@ -40,8 +40,7 @@ public class Vein extends ActiveEntity{
         }
 
         scheduler.scheduleEvent(this,
-                Create.createActivityAction(this, world, imageStore),
-                this.getActionPeriod());
+                new Activity(this, world, imageStore), this.getActionPeriod());
     }
 
     public void scheduleActions(
@@ -49,7 +48,6 @@ public class Vein extends ActiveEntity{
             WorldModel world,
             ImageStore imageStore)
     {
-        scheduler.scheduleEvent(this, Create.createActivityAction(this, world, imageStore),
-                this.getActionPeriod());
+        scheduler.scheduleEvent(this, new Activity(this, world, imageStore), this.getActionPeriod());
     }
 }

@@ -1,19 +1,13 @@
 public class Animation implements Action {
 
     public AnimatedEntity entity;
-    public WorldModel world;
-    public ImageStore imageStore;
     public int repeatCount;
 
     public Animation(
             AnimatedEntity entity,
-            WorldModel world,
-            ImageStore imageStore,
             int repeatCount)
     {
         this.entity = entity;
-        this.world = world;
-        this.imageStore = imageStore;
         this.repeatCount = repeatCount;
     }
 
@@ -23,9 +17,7 @@ public class Animation implements Action {
 
         if (this.repeatCount != 1) {
             scheduler.scheduleEvent(this.entity,
-                    Create.createAnimationAction(this.entity,
-                            Math.max(this.repeatCount - 1,
-                                    0)),
+                    new Animation(this.entity, Math.max(this.repeatCount - 1, 0)),
                     this.entity.getAnimationPeriod());
         }
     }

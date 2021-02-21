@@ -32,8 +32,7 @@ public class Miner_not_Full extends MinerEntity {
                 || !this.transformNotFull(world, scheduler, imageStore))
         {
             scheduler.scheduleEvent( this,
-                    Create.createActivityAction(this, world, imageStore),
-                    this.getActionPeriod());
+                    new Activity(this, world, imageStore), this.getActionPeriod());
         }
     }
 

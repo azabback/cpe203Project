@@ -14,11 +14,9 @@ public abstract class MovingEntity extends AnimatedEntity {
             ImageStore imageStore)
     {
         scheduler.scheduleEvent(this,
-                Create.createActivityAction(this, world, imageStore),
-                this.getActionPeriod());
+                new Activity(this, world, imageStore), this.getActionPeriod());
         scheduler.scheduleEvent(this,
-                Create.createAnimationAction(this, 0),
-                this.getAnimationPeriod());
+                new Animation(this, 0), this.getAnimationPeriod());
     }
 
     abstract Point nextPosition(WorldModel world, Point destPos);
