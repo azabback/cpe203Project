@@ -3,12 +3,10 @@ import processing.core.PImage;
 import java.util.List;
 import java.util.Optional;
 
-public class Miner_Full extends ActiveEntity implements MovingEntity {
+public class Miner_Full extends AnimatedEntity implements MovingEntity {
 
     public int resourceLimit;
     public int resourceCount;
-    public int actionPeriod;
-    public int animationPeriod;
 
 
     public Miner_Full(
@@ -20,14 +18,10 @@ public class Miner_Full extends ActiveEntity implements MovingEntity {
             int actionPeriod,
             int animationPeriod)
     {
-        super(id, position, images);
+        super(id, position, images, actionPeriod, animationPeriod);
         this.resourceLimit = resourceLimit;
         this.resourceCount = resourceCount;
-        this.actionPeriod = actionPeriod;
-        this.animationPeriod = animationPeriod;
     }
-
-    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,
@@ -45,7 +39,7 @@ public class Miner_Full extends ActiveEntity implements MovingEntity {
         else {
             scheduler.scheduleEvent(this,
                     Create.createActivityAction(this, world, imageStore),
-                    this.actionPeriod);
+                    this.getActionPeriod());
         }
     }
 
@@ -56,8 +50,8 @@ public class Miner_Full extends ActiveEntity implements MovingEntity {
             ImageStore imageStore)
     {
         ActiveEntity miner = Create.createMinerNotFull(this.getID(), this.resourceLimit,
-                this.getPosition(), this.actionPeriod,
-                this.animationPeriod,
+                this.getPosition(), this.getActionPeriod(),
+                this.getAnimationPeriod(),
                 this.getImages());
 
         world.removeEntity(this);
@@ -74,7 +68,7 @@ public class Miner_Full extends ActiveEntity implements MovingEntity {
     {
         scheduler.scheduleEvent(this,
                 Create.createActivityAction(this, world, imageStore),
-                this.actionPeriod);
+                this.getActionPeriod());
         scheduler.scheduleEvent(this,
                 Create.createAnimationAction(this, 0),
                 this.getAnimationPeriod());

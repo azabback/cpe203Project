@@ -4,8 +4,6 @@ import java.util.List;
 
 public class Blacksmith extends Entity{
 
-    public int animationPeriod;
-
 
     public Blacksmith(
             String id,
@@ -14,8 +12,5 @@ public class Blacksmith extends Entity{
     {
         super(id, position, images);
     }
-
-    public int getAnimationPeriod() { return this.animationPeriod; }
-
 
 }

@@ -6,9 +6,6 @@ import java.util.Random;
 
 public class Vein extends ActiveEntity{
 
-    public int actionPeriod;
-    public int animationPeriod;
-
     private static final String ORE_ID_PREFIX = "ore -- ";
     private static final int ORE_CORRUPT_MIN = 20000;
     private static final int ORE_CORRUPT_MAX = 30000;
@@ -23,11 +20,9 @@ public class Vein extends ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        super(id, position, images);
-        this.actionPeriod = actionPeriod;
+        super(id, position, images, actionPeriod);
     }
 
-    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,
@@ -47,7 +42,7 @@ public class Vein extends ActiveEntity{
 
         scheduler.scheduleEvent(this,
                 Create.createActivityAction(this, world, imageStore),
-                this.actionPeriod);
+                this.getActionPeriod());
     }
 
     public void scheduleActions(
@@ -56,6 +51,6 @@ public class Vein extends ActiveEntity{
             ImageStore imageStore)
     {
         scheduler.scheduleEvent(this, Create.createActivityAction(this, world, imageStore),
-                this.actionPeriod);
+                this.getActionPeriod());
     }
 }

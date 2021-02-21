@@ -1,12 +1,12 @@
 public class Animation implements Action {
 
-    public Entity entity;
+    public AnimatedEntity entity;
     public WorldModel world;
     public ImageStore imageStore;
     public int repeatCount;
 
     public Animation(
-            Entity entity,
+            AnimatedEntity entity,
             WorldModel world,
             ImageStore imageStore,
             int repeatCount)

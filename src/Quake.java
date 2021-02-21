@@ -2,10 +2,8 @@ import processing.core.PImage;
 
 import java.util.List;
 
-public class Quake extends ActiveEntity{
+public class Quake extends AnimatedEntity {
 
-    public int actionPeriod;
-    public int animationPeriod;
 
     private static final String QUAKE_ID = "quake";
     private static final int QUAKE_ACTION_PERIOD = 1100;
@@ -17,12 +15,9 @@ public class Quake extends ActiveEntity{
             Point position,
             List<PImage> images)
     {
-        super(QUAKE_ID, position, images);
-        this.actionPeriod = QUAKE_ACTION_PERIOD;
-        this.animationPeriod = QUAKE_ANIMATION_PERIOD;
+        super(QUAKE_ID, position, images, QUAKE_ANIMATION_PERIOD, QUAKE_ACTION_PERIOD);
     }
 
-    public int getAnimationPeriod() { return this.animationPeriod; }
 
 
     public void executeActivity(
@@ -42,7 +37,7 @@ public class Quake extends ActiveEntity{
     {
                 scheduler.scheduleEvent(this,
                         Create.createActivityAction(this, world, imageStore),
-                        this.actionPeriod);
+                        this.getActionPeriod());
                 scheduler.scheduleEvent(this, Create.createAnimationAction(this,
                         QUAKE_ANIMATION_REPEAT_COUNT),
                         this.getAnimationPeriod());

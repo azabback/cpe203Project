@@ -5,9 +5,6 @@ import java.util.Random;
 
 public class Ore extends ActiveEntity{
 
-    public int actionPeriod;
-    public int animationPeriod;
-
     private static final String BLOB_KEY = "blob";
     private static final String BLOB_ID_SUFFIX = " -- blob";
     private static final int BLOB_PERIOD_SCALE = 4;
@@ -21,12 +18,9 @@ public class Ore extends ActiveEntity{
             List<PImage> images,
             int actionPeriod)
     {
-        super(id, position, images);
-        this.actionPeriod = actionPeriod;
+        super(id, position, images, actionPeriod);
     }
 
-
-    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,
@@ -39,7 +33,7 @@ public class Ore extends ActiveEntity{
         scheduler.unscheduleAllEvents(this);
 
         ActiveEntity blob = Create.createOreBlob(this.getID() + BLOB_ID_SUFFIX, pos,
-                this.actionPeriod / BLOB_PERIOD_SCALE,
+                this.getActionPeriod() / BLOB_PERIOD_SCALE,
                 BLOB_ANIMATION_MIN + rand.nextInt(
                         BLOB_ANIMATION_MAX
                                 - BLOB_ANIMATION_MIN),
@@ -56,6 +50,6 @@ public class Ore extends ActiveEntity{
             ImageStore imageStore)
     {
         scheduler.scheduleEvent(this, Create.createActivityAction(this, world, imageStore),
-            this.actionPeriod);
+            this.getActionPeriod());
     }
 }

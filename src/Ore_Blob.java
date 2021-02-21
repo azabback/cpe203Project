@@ -4,11 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public class Ore_Blob extends ActiveEntity implements MovingEntity{
-
-    public int actionPeriod;
-    public int animationPeriod;
-
+public class Ore_Blob extends AnimatedEntity implements MovingEntity{
 
     private static final String QUAKE_KEY = "quake";
 
@@ -19,13 +15,8 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
             int actionPeriod,
             int animationPeriod)
     {
-        super(id, position, images);
-        this.actionPeriod = actionPeriod;
-        this.animationPeriod = animationPeriod;
+        super(id, position, images, actionPeriod, animationPeriod);
     }
-
-
-    public int getAnimationPeriod() { return this.animationPeriod; }
 
     public void executeActivity(
             WorldModel world,
@@ -34,7 +25,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
     {
         Optional<Entity> blobTarget =
                 world.findNearest(this.getPosition(), Vein.class);
-        long nextPeriod = this.actionPeriod;
+        long nextPeriod = this.getActionPeriod();
 
         if (blobTarget.isPresent()) {
             Point tgtPos = blobTarget.get().getPosition();
@@ -44,7 +35,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
                         imageStore.getImageList(QUAKE_KEY));
 
                 world.addEntity(quake);
-                nextPeriod += this.actionPeriod;
+                nextPeriod += this.getActionPeriod();
                 quake.scheduleActions(scheduler, world, imageStore);
             }
         }
@@ -61,7 +52,7 @@ public class Ore_Blob extends ActiveEntity implements MovingEntity{
     {
         scheduler.scheduleEvent(this,
                 Create.createActivityAction(this, world, imageStore),
-                this.actionPeriod);
+                this.getActionPeriod());
         scheduler.scheduleEvent(this,
                 Create.createAnimationAction(this, 0),
                 this.getAnimationPeriod());

@@ -5,7 +5,7 @@ import java.util.List;
 public class Create {
 
 
-    public static Action createAnimationAction(Entity entity, int repeatCount) {
+    public static Action createAnimationAction(AnimatedEntity entity, int repeatCount) {
         return new Animation(entity, null, null,
                 repeatCount);
     }

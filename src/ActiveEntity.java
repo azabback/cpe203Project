@@ -4,6 +4,8 @@ import java.util.List;
 
 public abstract class ActiveEntity extends Entity{
 
+    private int actionPeriod;
+
     abstract void executeActivity(
             WorldModel world,
             ImageStore imageStore,
@@ -14,8 +16,13 @@ public abstract class ActiveEntity extends Entity{
             WorldModel world,
             ImageStore imageStore);
 
-    public ActiveEntity(String id, Point position, List<PImage> images){
+    public ActiveEntity(String id, Point position, List<PImage> images, int actionPeriod){
         super(id, position, images);
+        this.actionPeriod = actionPeriod;
+    }
+
+    public int getActionPeriod(){
+        return this.actionPeriod;
     }
 
 }
