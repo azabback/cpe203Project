@@ -31,15 +31,15 @@ public abstract class MinerEntity extends MovingEntity{
         return newPos;
     }
 
-    public int getResourceLimit(){
+    protected int getResourceLimit(){
         return this.resourceLimit;
     }
 
-    public int getResourceCount(){
+    protected int getResourceCount(){
         return this.resourceCount;
     }
 
-    public void incrementResourceCount(){
+    protected void incrementResourceCount(){
         this.resourceCount ++;
     }
 }

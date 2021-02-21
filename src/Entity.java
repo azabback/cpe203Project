@@ -16,27 +16,27 @@ public abstract class Entity
         this.imageIndex = 0;
     }
 
-    public String getID(){
+    protected String getID(){
         return this.id;
     }
 
-    public Point getPosition(){
+    protected Point getPosition(){
         return this.position;
     }
 
-    public void setPosition(Point p) {
+    protected void setPosition(Point p) {
         this.position = p;
     }
 
-    public PImage getCurrentImage() {
+    protected PImage getCurrentImage() {
         return this.images.get(this.imageIndex);
     }
 
-    public List<PImage> getImages(){
+    protected List<PImage> getImages(){
         return this.images;
     }
 
-    public void nextImage() {
+    protected void nextImage() {
         this.imageIndex = (this.imageIndex + 1) % this.images.size();
     }
 }

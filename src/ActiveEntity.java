@@ -21,7 +21,7 @@ public abstract class ActiveEntity extends Entity{
         this.actionPeriod = actionPeriod;
     }
 
-    public int getActionPeriod(){
+    protected int getActionPeriod(){
         return this.actionPeriod;
     }
 

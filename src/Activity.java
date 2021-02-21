@@ -1,9 +1,9 @@
 public class Activity implements Action {
 
-    public ActiveEntity entity;
-    public WorldModel world;
-    public ImageStore imageStore;
-    public int repeatCount;
+    private ActiveEntity entity;
+    private WorldModel world;
+    private ImageStore imageStore;
+    private int repeatCount;
 
     public Activity(
             ActiveEntity entity,

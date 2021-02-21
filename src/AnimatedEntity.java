@@ -11,7 +11,7 @@ public abstract class AnimatedEntity extends ActiveEntity{
         this.animationPeriod = animationPeriod;
     }
 
-    public int getAnimationPeriod() {
+    protected int getAnimationPeriod() {
         return this.animationPeriod;
     }
 }

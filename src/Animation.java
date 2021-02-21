@@ -1,7 +1,7 @@
 public class Animation implements Action {
 
-    public AnimatedEntity entity;
-    public int repeatCount;
+    private AnimatedEntity entity;
+    private int repeatCount;
 
     public Animation(
             AnimatedEntity entity,
