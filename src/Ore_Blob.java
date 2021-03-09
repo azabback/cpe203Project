@@ -81,8 +81,7 @@ public class Ore_Blob extends MovingEntity{
 
         points = strategy.computePath(pos, destPos,
                 p -> world.withinBounds(p) &&
-                        ((world.getOccupant(p).isPresent() && world.getOccupant(p).getClass().equals(Ore.class) ||
-                                !world.isOccupied(p))),
+                        (!world.isOccupied(p) || world.getOccupant(p).get().getClass().equals(Ore.class)),
                 (p1, p2) -> p1.adjacent(p2),
                 PathingStrategy.CARDINAL_NEIGHBORS);
         //DIAGONAL_NEIGHBORS);

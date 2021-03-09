@@ -28,7 +28,7 @@ class AStarPathingStrategy
 
         while (openList.size() > 0) {
             FPoint current = openList.remove(0);
-            if (current.getPoint().adjacent(end)) {
+            if (withinReach.test(current.getPoint(), end)) {
                 Point currPt = current.getPoint();
                 path.addFirst(currPt);
                 while (cameFrom.containsKey(currPt)) {
